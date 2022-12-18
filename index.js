@@ -1,7 +1,10 @@
 let canvas = document.getElementById('canvas');
-canvas.h = canvas.width / 2; // canvas shift
-canvas.k = canvas.height / 2; 
 const ctx = canvas.getContext('2d');
+// UI stuff
+ctx.strokeStyle = "red";
+
+// Actual back-end stuff
+ctx.translate(canvas.width / 2, canvas.height / 2)
 
 // In all calculation, it pretends as if we are doing it at the origin
 // When drawing, just simply shift the graph to the correct position
@@ -46,11 +49,44 @@ class Graph {
                 return this.m*x-this.k;
         }
     }
+    /**
+     * Determine the closest graph that intersected closest to the point
+     * This function probably only use for the light
+     * INCOMPLETED
+     * @param {Graph[]} graphs Array of graph to consider the intersect
+     * @param {Number} x
+     * @param {Number} y
+     * @returns {Graph} 
+     */
+    intersect(graphs, x, y) {
+        // go through the list of all other graphs to determine which are being intersected
+        // closet to the point, return none if there is... none
+        // this function probably only use for the light 
+        let target = undefined,
+            smallestD = Infinity;
+        for (let g of graphs) {
+            if (g.type == 'ellipse') {
+                    // INCOMPLETED
+            } else if (g.type == 'line') {
+                // when line intersect with a line, it only have one intersect
+                var x1 = (g.k - this.k) / (this.m - g.m);
+                if (x == Infinity) {alert('Division by zero @ Graph.intersect, please try again')}
+                var y1 = g.m * x + g.k;
+            }
+            // TODO: TEST THIS SECTION
+            let distance = Math.sqrt((x1 - x)**2 + (y1 - y)**2);
+            if (distance <= smallestD) {
+                smallestD = distance;
+                target = g;
+            }
+        }
+        return target; // consider return graph AND the intersection
+    }
     tangent(x, y) {
         // check to make sure only call on ellipse
         if (this.type != 'ellipse') 
             throw TypeError('Expected invoke on ellipse, got ' + this.type);
-        // calculate the tangent slop thanks to Leo
+        // calculate the tangent slope thanks to Leo
         let m = (b*b / a*a)*(x, y),
             c = y-m*x;
         return new Graph('line', {m: m, c: c})
@@ -59,17 +95,16 @@ class Graph {
         switch (this.type) {
             case 'ellipse':
                 ctx.beginPath()
-                ctx.ellipse(this.h + canvas.h, this.k + canvas.k, this.a, this.b, 0, 0, Math.PI * 2)
+                ctx.ellipse(this.h, this.k, this.a, this.b, 0, 0, Math.PI * 2);
                 ctx.stroke()
                 break;
             case 'line':
             default:
-                let k = -this.m * canvas.h + this.k + canvas.k;
+                // calculate k after transformation for drawing
+                // then min max in the canvas instead of graph
                 ctx.beginPath();
-                let minX = this.minX + canvas.h,
-                    maxX = this.maxX + canvas.h;
-                ctx.moveTo(minX, this.m * minX + k);
-                ctx.lineTo(maxX, this.m * maxX + k);
+                ctx.moveTo(this.minX, this.m * this.minX + this.k);
+                ctx.lineTo(this.maxX, this.m * this.maxX + this.k);
                 ctx.stroke();
                 break;
         }
