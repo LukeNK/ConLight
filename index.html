@@ -4,16 +4,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Con Light</title>
     <style>
-        body {
-            background-color: black;
+        :root {
+            --color-bg: #000411ff;
+            --color-theme: #ffd4d4ff;
+            --color-dark-fg: #160c28ff;
+            --color-light: #edf67dff;
+            --heliotrope: #ca7df9ff;
         }
+
+        body {
+            font-family: Verdana, Tahoma, sans-serif;
+            color: var(--color-theme);
+            background-color: var(--color-bg);
+        }
+
         canvas {
-            background-color: white;
+            background-color: var(--color-theme);
         }
     </style>
 </head>
 <body>
-    <canvas id="canvas" width="500" height="500"></canvas>
+    <h1>Con(ic) Light</h1>
+    <p>Objective: shine the light in a way that it will reach to the target points</p>
+    <canvas id="canvas"  width="500" height="1000"></canvas>
     <script src="index.js"></script>
 </body>
 <html>
