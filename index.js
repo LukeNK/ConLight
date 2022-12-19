@@ -49,7 +49,7 @@ class Graph {
         switch (this.type) {
             case 'ellipse':
                 if (!(this.minX <= x && x <= this.maxX)) return false;
-                let a = this.a, b = this.b, h = this.h, k = this.k;
+                let {a, b, h, k} = this;
                 let frac = (a*a - (x-h)**2)/(a*a);
                 let rt = Math.sqrt(frac * b*b);
                 let y1 = rt + k, y2 = -rt + k;
@@ -70,33 +70,35 @@ class Graph {
     intersect(graphs) {
         // this function probably only use for the light 
         if (this.type != 'line') 
-            throw TypeError('Only invoke Graph.intersect() for light!');
+            throw TypeError('Only invoke Graph.intersect() for line!');
         let target = [];
         for (let g of graphs) {
             var x1, y1;
             if (g.type == 'ellipse') {
-                // INCOMPLETED
-                // discriminant + sqrt
-                let a = g.a, b = g.b, k = this.k - g.k - this.m * g.h, m = this.m;
+                let k = this.k, m = this.m;
+                let {a, b} = g;
                 let dis = Math.sqrt(a*a * m*m + b*b - k*k);
                 x1 = (-a*a * m * k + a * b * dis) / (a*a * m*m + b*b);
-                y1 = this.calcFunc(x1);
+                y1 = this.calcFunc(x1)[0] + m * k;
                 // test if the result is in bound
                 if (y1 !== false && g.calcFunc(x1) !== false) 
-                    target.push({graph: g, x: x1, y: y1})
+                    target.push({graph: g, x: x1, y: y1});
                 let x2 = (-a*a * m * k - a * b * dis) / (a*a * m*m + b*b);
-                let y2 = this.calcFunc(x2);
+                let y2 = this.calcFunc(x2)[0] + m * k;
+                console.log(y2)
                 if (this.calcFunc(x2) !== false && g.calcFunc(x2) !== false) 
                     target.push({graph: g, x: x2, y: y2});
             } else if (g.type == 'line') {
                 // when line intersect with a line, it only have one intersect
                 x1 = (g.k - this.k) / (this.m - g.m);
-                if (x1 == Infinity) {alert('Division by zero @ Graph.intersect, please try again')}
+                if (x1 == Infinity)
+                    alert('Division by zero @ Graph.intersect, please try again');
                 if (this.calcFunc(x1) === false || g.calcFunc(x1) === false) continue;
                 y1 = g.m * x1 + g.k;
                 target.push({graph: g, x: x1, y: y1});
             }
         }
+        // then sort the targets, or else...
         return target;
     }
     /**
@@ -108,11 +110,11 @@ class Graph {
     tangent(x, y) {
         // check to make sure only call on ellipse
         if (this.type != 'ellipse') 
-            throw TypeError('Expected invoke on ellipse, got ' + this.type);
+        throw TypeError('Expected invoke on ellipse, got ' + this.type);
         // simplify variables
+        let {a, b} = this;
         x = x - this.h;
         y = y - this.k;
-        let a = this.a, b = this.b;
         // calculate the tangent slope thanks to Leo
         let m = -b*b * x / (a*a * y); // SLOPE IS THE PROBLEM
         x = x + this.h;
@@ -140,13 +142,12 @@ class Graph {
     }
 }
 
-let ell = new Graph('ellipse', {a: 200, b: 200}),
-    ln = new Graph('line', {m: -1, k: 0}, -200, 200);
-let inters = ln.intersect([ell])[0];
-let ta = ell.tangent(inters.x, inters.y);
-ell.draw(); ln.draw(); ta.draw();
-inters = ln.intersect([ell])[1];
-ta = ell.tangent(inters.x, inters.y);
-ta.draw();
-new Graph('ellipse', {a: 10, b: 10}).draw()
-console.log(ln.intersect([ell]))
+let l1 = new Graph('line', {m: 2, k : -50}),
+    l2 = new Graph('line', {m: -2, k : 0}),
+    l3 = new Graph('ellipse', {a: 100, b: 200, h: 0, k: 0})
+let inter = l1.intersect([l2])[0];
+let l4 = new Graph('ellipse', {a: 10, b: 10, h: inter.x, k: inter.y});
+inter = l1.intersect([l3])[1];
+new Graph('ellipse', {a: 10, b: 10, h: inter.x, k: inter.y}).draw();
+new Graph('ellipse', {a: 10, b: 10, h: 0, k: 0}).draw()
+l1.draw(); l2.draw(); l3.draw(); l4.draw();
