@@ -73,7 +73,7 @@ class Graph {
             if (g.type == 'ellipse') {
                 // INCOMPLETED
                 // discriminant + sqrt
-                let a = g.a, b = g.b, k = this.k, m = this.m;
+                let a = g.a, b = g.b, k = this.k - g.k - this.m * g.h, m = this.m;
                 let dis = Math.sqrt(a*a * m*m + b*b - k*k)
                 console.log(dis)
                 x1 = (-a*a * m * k + a * b * dis) / (a*a * m*m + b*b);
@@ -105,10 +105,15 @@ class Graph {
         if (this.type != 'ellipse') 
             throw TypeError('Expected invoke on ellipse, got ' + this.type);
         // simplify variables
+        x = x - this.h;
+        y = y - this.k;
         let a = this.a, b = this.b;
         // calculate the tangent slope thanks to Leo
-        let m = -b*b * x / (a*a * y)
-        let k = y-m*x;
+        let m = -b*b * x / (a*a * y); // SLOPE IS THE PROBLEM
+        x = x + this.h;
+        y = y + this.k;
+        let k = y - m*x;
+        console.log('slope is ' + m);
         return new Graph('line', {m: m, k: k})
     }
     draw() {
@@ -131,8 +136,13 @@ class Graph {
     }
 }
 
-let ell = new Graph('ellipse', {a: 100, b: 100, h: 50}),
-    ln = new Graph('line', {m: 2, k: -56}, -100, 100);
+let ell = new Graph('ellipse', {a: 100, b: 200, h: 50}),
+    ln = new Graph('line', {m: -2, k: 0}, -100, 100);
 let inters = ln.intersect([ell])[0];
 let ta = ell.tangent(inters.x, inters.y);
 ell.draw(); ln.draw(); ta.draw();
+inters = ln.intersect([ell])[1];
+ta = ell.tangent(inters.x, inters.y);
+ta.draw();
+new Graph('ellipse', {a: 10, b: 10}).draw()
+console.log(ln.intersect([ell]))
