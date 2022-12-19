@@ -75,19 +75,17 @@ class Graph {
         for (let g of graphs) {
             var x1, y1;
             if (g.type == 'ellipse') {
-                let k = this.k, m = this.m;
-                let {a, b} = g;
-                let dis = Math.sqrt(a*a * m*m + b*b - k*k);
-                x1 = (-a*a * m * k + a * b * dis) / (a*a * m*m + b*b);
-                y1 = this.calcFunc(x1)[0] + m * k;
-                // test if the result is in bound
-                if (y1 !== false && g.calcFunc(x1) !== false) 
-                    target.push({graph: g, x: x1, y: y1});
-                let x2 = (-a*a * m * k - a * b * dis) / (a*a * m*m + b*b);
-                let y2 = this.calcFunc(x2)[0] + m * k;
-                console.log(y2)
-                if (this.calcFunc(x2) !== false && g.calcFunc(x2) !== false) 
-                    target.push({graph: g, x: x2, y: y2});
+                let {m, k} = this, {a, b, h} = g;
+                k = m*h + k + g.k;
+                let e = a*a * m*m + b*b;
+                let d = e - k*k;
+                let rad = a * b * Math.sqrt(d);
+                x1 = (-a*a * m * k + rad) / e;
+                let x2 = (-a*a * m * k - rad) / e;
+                target.push(
+                    {graph: g, x: x1 + h, y: m * x1 + k + g.k},
+                    {graph: g, x: x2 + h, y: m * x2 + k},
+                )
             } else if (g.type == 'line') {
                 // when line intersect with a line, it only have one intersect
                 x1 = (g.k - this.k) / (this.m - g.m);
@@ -110,7 +108,7 @@ class Graph {
     tangent(x, y) {
         // check to make sure only call on ellipse
         if (this.type != 'ellipse') 
-        throw TypeError('Expected invoke on ellipse, got ' + this.type);
+            throw TypeError('Expected invoke on ellipse, got ' + this.type);
         // simplify variables
         let {a, b} = this;
         x = x - this.h;
@@ -142,12 +140,13 @@ class Graph {
     }
 }
 
-let l1 = new Graph('line', {m: 2, k : -50}),
+let l1 = new Graph('line', {m: 2, k : 0}),
     l2 = new Graph('line', {m: -2, k : 0}),
-    l3 = new Graph('ellipse', {a: 100, b: 200, h: 0, k: 0})
-let inter = l1.intersect([l2])[0];
+    l3 = new Graph('ellipse', {a: 100, b: 200, h: 50, k: 0})
+let inter = l1.intersect([l3])[0];
+l3.tangent(inter.x, inter.y).draw();
+console.log(inter);
 let l4 = new Graph('ellipse', {a: 10, b: 10, h: inter.x, k: inter.y});
-inter = l1.intersect([l3])[1];
-new Graph('ellipse', {a: 10, b: 10, h: inter.x, k: inter.y}).draw();
 new Graph('ellipse', {a: 10, b: 10, h: 0, k: 0}).draw()
 l1.draw(); l2.draw(); l3.draw(); l4.draw();
+new Graph('ellipse', {a: 100, b: 200, h: 0, k: 0}).draw();
