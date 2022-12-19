@@ -1,11 +1,10 @@
 let canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 // UI stuff
-ctx.strokeStyle = "red";
+ctx.strokeStyle = "pink";
 
 // Actual back-end stuff
-ctx.translate(canvas.width / 2, canvas.height / 2)
-
+ctx.translate(canvas.width / 2, canvas.height / 2);
 // In all calculation, it pretends as if we are doing it at the origin
 // When drawing, just simply shift the graph to the correct position
 class Graph {
@@ -44,16 +43,21 @@ class Graph {
     /**
      * Calculate x to get y
      * @param {Number} x Input for the function/equation 
-     * @returns {(Number[])} In case of function, return a number, else return an array of result
+     * @returns {(Number[]|false)} In case of function return an array of result or false if out of bound
      */
     calcFunc(x) {
         switch (this.type) {
             case 'ellipse':
-                let inside = (a*a - x*x) / a*a * b*b
-                return [ +Math.sqrt(inside), -Math.sqrt(inside) ]
+                if (!(this.minX <= x && x <= this.maxX)) return false;
+                let a = this.a, b = this.b, h = this.h, k = this.k;
+                let frac = (a*a - (x-h)**2)/(a*a);
+                let rt = Math.sqrt(frac * b*b);
+                let y1 = rt + k, y2 = -rt + k;
+                return [ y1, y2 ];
             case 'line':
             default:
-                return [ this.m*x-this.k ];
+                if (!(this.minX <= x && x <= this.maxX)) return false;
+                else return [ this.m * x - this.k ];
         }
     }
     /**
@@ -74,25 +78,26 @@ class Graph {
                 // INCOMPLETED
                 // discriminant + sqrt
                 let a = g.a, b = g.b, k = this.k - g.k - this.m * g.h, m = this.m;
-                let dis = Math.sqrt(a*a * m*m + b*b - k*k)
-                console.log(dis)
+                let dis = Math.sqrt(a*a * m*m + b*b - k*k);
                 x1 = (-a*a * m * k + a * b * dis) / (a*a * m*m + b*b);
-                y1 = this.m * x1 + this.k;
+                y1 = this.calcFunc(x1);
+                // test if the result is in bound
+                if (y1 !== false && g.calcFunc(x1) !== false) 
+                    target.push({graph: g, x: x1, y: y1})
                 let x2 = (-a*a * m * k - a * b * dis) / (a*a * m*m + b*b);
-                let y2 = this.m * x2 + this.k;
-                target.push(
-                    {graph: g, x: x1, y: y1},
-                    {graph: g, x: x2, y: y2}
-                )
+                let y2 = this.calcFunc(x2);
+                if (this.calcFunc(x2) !== false && g.calcFunc(x2) !== false) 
+                    target.push({graph: g, x: x2, y: y2});
             } else if (g.type == 'line') {
                 // when line intersect with a line, it only have one intersect
                 x1 = (g.k - this.k) / (this.m - g.m);
                 if (x1 == Infinity) {alert('Division by zero @ Graph.intersect, please try again')}
+                if (this.calcFunc(x1) === false || g.calcFunc(x1) === false) continue;
                 y1 = g.m * x1 + g.k;
                 target.push({graph: g, x: x1, y: y1});
             }
         }
-        return target; // consider return graph AND the intersection
+        return target;
     }
     /**
      * Find the tangent at specific point
@@ -113,7 +118,6 @@ class Graph {
         x = x + this.h;
         y = y + this.k;
         let k = y - m*x;
-        console.log('slope is ' + m);
         return new Graph('line', {m: m, k: k})
     }
     draw() {
@@ -136,8 +140,8 @@ class Graph {
     }
 }
 
-let ell = new Graph('ellipse', {a: 100, b: 200, h: 50}),
-    ln = new Graph('line', {m: -2, k: 0}, -100, 100);
+let ell = new Graph('ellipse', {a: 200, b: 200}),
+    ln = new Graph('line', {m: -1, k: 0}, -200, 200);
 let inters = ln.intersect([ell])[0];
 let ta = ell.tangent(inters.x, inters.y);
 ell.draw(); ln.draw(); ta.draw();
