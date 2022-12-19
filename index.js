@@ -76,7 +76,7 @@ class Graph {
             var x1, y1;
             if (g.type == 'ellipse') {
                 let {m, k} = this, {a, b, h} = g;
-                k = m*h + k + g.k;
+                k = m*h + k - g.k;
                 let e = a*a * m*m + b*b;
                 let d = e - k*k;
                 let rad = a * b * Math.sqrt(d);
@@ -84,7 +84,7 @@ class Graph {
                 let x2 = (-a*a * m * k - rad) / e;
                 target.push(
                     {graph: g, x: x1 + h, y: m * x1 + k + g.k},
-                    {graph: g, x: x2 + h, y: m * x2 + k},
+                    {graph: g, x: x2 + h, y: m * x2 + k + g.k},
                 )
             } else if (g.type == 'line') {
                 // when line intersect with a line, it only have one intersect
@@ -140,9 +140,9 @@ class Graph {
     }
 }
 
-let l1 = new Graph('line', {m: 2, k : 0}),
+let l1 = new Graph('line', {m: 2, k : 50}),
     l2 = new Graph('line', {m: -2, k : 0}),
-    l3 = new Graph('ellipse', {a: 100, b: 200, h: 50, k: 0})
+    l3 = new Graph('ellipse', {a: 100, b: 200, h: 50, k: 50})
 let inter = l1.intersect([l3])[0];
 l3.tangent(inter.x, inter.y).draw();
 console.log(inter);
