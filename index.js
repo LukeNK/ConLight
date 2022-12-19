@@ -61,44 +61,35 @@ class Graph {
      * This function probably only use for light
      * INCOMPLETED
      * @param {Graph[]} graphs Array of graph to consider the intersect
-     * @param {Number} x
-     * @param {Number} y
-     * @param {} hdg The hedding of the line that we expected to consider
-     * @returns {Graph} 
+     * @returns {[]} Array of graphs, inside have intersections x y
      */
     intersect(graphs) {
         // this function probably only use for the light 
         if (this.type != 'line' && !this.light) 
             throw TypeError('Only invoke Graph.intersect() for light!');
-        let target = undefined,
-            smallestD = Infinity;
+        let target = [];
         for (let g of graphs) {
             var x1, y1;
             if (g.type == 'ellipse') {
                 // INCOMPLETED
                 // discriminant + sqrt
                 let a = g.a, b = g.b, k = this.k, m = this.m;
-                let dis = Math.sqrt(a*a* m*m + b*b - k*k)
+                let dis = Math.sqrt(a*a * m*m + b*b - k*k)
+                console.log(dis)
                 x1 = (-a*a * m * k + a * b * dis) / (a*a * m*m + b*b);
                 y1 = this.m * x1 + this.k;
                 let x2 = (-a*a * m * k - a * b * dis) / (a*a * m*m + b*b);
                 let y2 = this.m * x2 + this.k;
-
-                // TODO: CHECK HDG + MIN MAX + CLOSEST
+                target.push(
+                    {graph: g, x: x1, y: y1},
+                    {graph: g, x: x2, y: y2}
+                )
             } else if (g.type == 'line') {
                 // when line intersect with a line, it only have one intersect
                 x1 = (g.k - this.k) / (this.m - g.m);
-                if (x == Infinity) {alert('Division by zero @ Graph.intersect, please try again')}
-                y1 = g.m * x + g.k;
-            }
-            // check limit, skip if out of bound
-            if (!(this.minX <= x1 && x1 <= this.maxX)) continue;
-            if (!(g.minX <= x1 && x1 <= g.maxX)) continue;
-            // TODO: CHECK HDG + MIN MAX + CLOSEST
-            let distance = Math.sqrt((x1 - x)**2 + (y1 - y)**2);
-            if (distance <= smallestD) {
-                smallestD = distance;
-                target = g;
+                if (x1 == Infinity) {alert('Division by zero @ Graph.intersect, please try again')}
+                y1 = g.m * x1 + g.k;
+                target.push({graph: g, x: x1, y: y1});
             }
         }
         return target; // consider return graph AND the intersection
@@ -140,9 +131,11 @@ class Graph {
     }
 }
 
-let ell = new Graph('ellipse', {a: 100, b: 100});
-new Graph('line', {m: 2}, -100, 100).draw();
+let ell = new Graph('ellipse', {a: 100, b: 100}),
+    ln = new Graph('line', {m: 2, k: 100}, -100, 100);
+let ta = ell.tangent(53, 84.8);
 ell.draw();
-let ln = ell.tangent(53, 84.8);
+ta.draw();
 ln.draw();
-console.log(ln);
+console.log(ln.intersect([ell, ta]));
+new Graph('ellipse', {a: 10, b:10, k: 100}).draw()
