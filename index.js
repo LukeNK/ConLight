@@ -18,7 +18,14 @@ class Graph {
      */
     constructor(type, coe, minX, maxX) {
         // Depends on type of graph, choose different coefficient
-        this.type = type;
+        // if it is the light, still treat it as a light with origin as min max and hdg
+        if (type == 'light') {
+            this.type = type = 'line';
+            this.light = true;
+            this.hdg = coe.hdg;
+            if (minX == undefined || maxX == undefined)
+                throw RangeError('light must have min and max');
+        } else this.type = type;
         switch (type) {
             case 'ellipse':
                 this.a = coe.a; this.b = coe.b;
@@ -30,50 +37,64 @@ class Graph {
                 this.k = coe.k || 0;
                 break;
         }
-        // set min and max to out of view for ease of calculation
+        // set min and max to out of view for ease of calculation, inclusive
         this.minX = minX || -canvas.width;
         this.maxX = maxX || canvas.width;
     }
     /**
      * Calculate x to get y
      * @param {Number} x Input for the function/equation 
-     * @returns {(Number|Number[])} In case of function, return a number, else return an array of result
+     * @returns {(Number[])} In case of function, return a number, else return an array of result
      */
     calcFunc(x) {
         switch (this.type) {
             case 'ellipse':
                 let inside = (a*a - x*x) / a*a * b*b
-                return [+Math.sqrt(inside), -Math.sqrt(inside)]
+                return [ +Math.sqrt(inside), -Math.sqrt(inside) ]
             case 'line':
             default:
-                return this.m*x-this.k;
+                return [ this.m*x-this.k ];
         }
     }
     /**
-     * Determine the closest graph that intersected closest to the point
-     * This function probably only use for the light
+     * Determine the intersects
+     * This function probably only use for light
      * INCOMPLETED
      * @param {Graph[]} graphs Array of graph to consider the intersect
      * @param {Number} x
      * @param {Number} y
+     * @param {} hdg The hedding of the line that we expected to consider
      * @returns {Graph} 
      */
-    intersect(graphs, x, y) {
-        // go through the list of all other graphs to determine which are being intersected
-        // closet to the point, return none if there is... none
+    intersect(graphs) {
         // this function probably only use for the light 
+        if (this.type != 'line' && !this.light) 
+            throw TypeError('Only invoke Graph.intersect() for light!');
         let target = undefined,
             smallestD = Infinity;
         for (let g of graphs) {
+            var x1, y1;
             if (g.type == 'ellipse') {
-                    // INCOMPLETED
+                // INCOMPLETED
+                // discriminant + sqrt
+                let a = g.a, b = g.b, k = this.k, m = this.m;
+                let dis = Math.sqrt(a*a* m*m + b*b - k*k)
+                x1 = (-a*a * m * k + a * b * dis) / (a*a * m*m + b*b);
+                y1 = this.m * x1 + this.k;
+                let x2 = (-a*a * m * k - a * b * dis) / (a*a * m*m + b*b);
+                let y2 = this.m * x2 + this.k;
+
+                // TODO: CHECK HDG + MIN MAX + CLOSEST
             } else if (g.type == 'line') {
                 // when line intersect with a line, it only have one intersect
-                var x1 = (g.k - this.k) / (this.m - g.m);
+                x1 = (g.k - this.k) / (this.m - g.m);
                 if (x == Infinity) {alert('Division by zero @ Graph.intersect, please try again')}
-                var y1 = g.m * x + g.k;
+                y1 = g.m * x + g.k;
             }
-            // TODO: TEST THIS SECTION
+            // check limit, skip if out of bound
+            if (!(this.minX <= x1 && x1 <= this.maxX)) continue;
+            if (!(g.minX <= x1 && x1 <= g.maxX)) continue;
+            // TODO: CHECK HDG + MIN MAX + CLOSEST
             let distance = Math.sqrt((x1 - x)**2 + (y1 - y)**2);
             if (distance <= smallestD) {
                 smallestD = distance;
@@ -82,21 +103,29 @@ class Graph {
         }
         return target; // consider return graph AND the intersection
     }
+    /**
+     * Find the tangent at specific point
+     * @param {Number} x X cord
+     * @param {Number} y Y cord
+     * @returns {Graph} the graph of the tangent
+     */
     tangent(x, y) {
         // check to make sure only call on ellipse
         if (this.type != 'ellipse') 
             throw TypeError('Expected invoke on ellipse, got ' + this.type);
+        // simplify variables
+        let a = this.a, b = this.b;
         // calculate the tangent slope thanks to Leo
-        let m = (b*b / a*a)*(x, y),
-            c = y-m*x;
-        return new Graph('line', {m: m, c: c})
+        let m = -b*b * x / (a*a * y)
+        let k = y-m*x;
+        return new Graph('line', {m: m, k: k})
     }
     draw() {
         switch (this.type) {
             case 'ellipse':
-                ctx.beginPath()
+                ctx.beginPath();
                 ctx.ellipse(this.h, this.k, this.a, this.b, 0, 0, Math.PI * 2);
-                ctx.stroke()
+                ctx.stroke();
                 break;
             case 'line':
             default:
@@ -110,3 +139,10 @@ class Graph {
         }
     }
 }
+
+let ell = new Graph('ellipse', {a: 100, b: 100});
+new Graph('line', {m: 2}, -100, 100).draw();
+ell.draw();
+let ln = ell.tangent(53, 84.8);
+ln.draw();
+console.log(ln);
