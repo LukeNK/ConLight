@@ -65,7 +65,7 @@ class Graph {
      */
     intersect(graphs) {
         // this function probably only use for the light 
-        if (this.type != 'line' && !this.light) 
+        if (this.type != 'line') 
             throw TypeError('Only invoke Graph.intersect() for light!');
         let target = [];
         for (let g of graphs) {
@@ -131,11 +131,8 @@ class Graph {
     }
 }
 
-let ell = new Graph('ellipse', {a: 100, b: 100}),
-    ln = new Graph('line', {m: 2, k: 100}, -100, 100);
-let ta = ell.tangent(53, 84.8);
-ell.draw();
-ta.draw();
-ln.draw();
-console.log(ln.intersect([ell, ta]));
-new Graph('ellipse', {a: 10, b:10, k: 100}).draw()
+let ell = new Graph('ellipse', {a: 100, b: 100, h: 50}),
+    ln = new Graph('line', {m: 2, k: -56}, -100, 100);
+let inters = ln.intersect([ell])[0];
+let ta = ell.tangent(inters.x, inters.y);
+ell.draw(); ln.draw(); ta.draw();
