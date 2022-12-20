@@ -8,8 +8,8 @@
             --color-bg: #000411ff;
             --color-theme: #ffd4d4ff;
             --color-dark-fg: #160c28ff;
+            --color-theme-bg: #ca7df9ff;
             --color-light: #edf67dff;
-            --heliotrope: #ca7df9ff;
         }
 
         body {
@@ -18,15 +18,63 @@
             background-color: var(--color-bg);
         }
 
+        button {
+            outline: none;
+            border-radius: 0%;
+            border: 0px;
+        }
+
+        nav div {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
         canvas {
             background-color: var(--color-bg);
         }
+
+        /* UI STUFF */
+        #menu {
+            background-color: var(--color-dark-fg);
+            color: var(--color-theme-bg);
+            text-align: center;
+        }
+        #menu button {
+            font-size: xx-large;
+            width: 25vw;
+            background-color: var(--color-theme-bg);
+            color: white;
+        }
+        #menu button:hover {
+            background-color: var(--color-bg);
+        }
+
+        #level {
+            display: none;
+            background-color: var(--color-bg);
+        }
+
+        /* ANIMATIONS */
     </style>
 </head>
 <body>
-    <h1>Con(ic) Light</h1>
-    <p>Objective: shine the light in a way that it will reach to the target points</p>
+    <nav>
+        <div id="level">
+            <h1>Select level</h1>
+            
+        </div>
+        <div id="menu">
+            <h1>CON LIGHT</h1>
+            <button onclick="goIntoLevel()">Play</button><br>
+            <!-- <button>Tutorial</button><br> -->
+            <button>Credit</button><br>
+        </div>
+    </nav>
     <canvas id="canvas"  width="500" height="1000"></canvas>
     <script src="index.js"></script>
+    <script src="ui.js"></script>
 </body>
 <html>

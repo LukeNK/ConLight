@@ -21,7 +21,7 @@ class Graph {
         if (type == 'light') {
             this.type = type = 'line';
             this.light = true;
-            this.hdg = coe.hdg;
+            this.hdg = coe.hdg; // true for up, false for down
             if (minX == undefined || maxX == undefined)
                 throw RangeError('light must have min and max');
         } else this.type = type;
@@ -120,6 +120,24 @@ class Graph {
         let k = y - m*x;
         return new Graph('line', {m: m, k: k})
     }
+    /**
+     * Only call on light, put tangent in case of ellipse
+     * @param {Graph} g The graph that being selected to reflecct ON
+     */
+    reflect(g) {
+        if (!this.light) throw TypeError('Expected invoke on light, got ' + this.type);
+        if (g.type == 'ellipse') throw TypeError('Please put tangent for g');
+        let {PI, atan} = Math,
+            m1 = this.m,
+            m2 = g.m;
+            d;
+        if (this.hdg) // from bottom up
+            d = PI - (atan(m2) - atan(m1));
+        else d = PI + (atan(m2) - atan(m1));
+    }
+    /**
+     * Draw out the graph
+     */
     draw() {
         switch (this.type) {
             case 'ellipse':
