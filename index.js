@@ -4,7 +4,6 @@ const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth
 const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
 canvas.width = vw;
 canvas.height = vh;
-console.log(canvas.width)
 // UI stuff
 ctx.strokeStyle = "pink";
 
@@ -162,14 +161,3 @@ class Graph {
         }
     }
 }
-
-let l1 = new Graph('line', {m: 2, k : 50}),
-    l2 = new Graph('line', {m: -2, k : 0}),
-    l3 = new Graph('ellipse', {a: 100, b: 200, h: 50, k: 50})
-let inter = l1.intersect([l3])[0];
-l3.tangent(inter.x, inter.y).draw();
-console.log(inter);
-let l4 = new Graph('ellipse', {a: 10, b: 10, h: inter.x, k: inter.y});
-new Graph('ellipse', {a: 10, b: 10, h: 0, k: 0}).draw()
-l1.draw(); l2.draw(); l3.draw(); l4.draw();
-new Graph('ellipse', {a: 100, b: 200, h: 0, k: 0}).draw();

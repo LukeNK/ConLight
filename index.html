@@ -3,7 +3,9 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Con Light</title>
+    <script src="./database.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap');
         :root {
             --color-bg: #000411ff;
             --color-theme: #ffd4d4ff;
@@ -24,6 +26,10 @@
             outline: none;
             border-radius: 0%;
             border: 0px;
+        }
+
+        h1 {
+            font-family: 'IBM Plex Sans', sans-serif;
         }
 
         nav div {
@@ -56,17 +62,27 @@
 
         #level {
             display: none;
+            font-size: xx-large;
             background-color: var(--color-bg);
+        }
+        #level button {
+            font-size: xx-large;
+            width: 25vw;
+            background-color: var(--color-light);
+            color: var(--color-bg);
+        }
+        #level button:hover {
+            background-color: var(--color-theme-bg);
         }
 
         /* ANIMATIONS */
     </style>
 </head>
 <body>
-    <nav style="display: none;">
+    <nav>
         <div id="level">
-            <h1>Select level</h1>
-            
+            <h1>SELECT LEVEL</h1> 
+            <div id="lvList"></div>
         </div>
         <div id="menu">
             <h1>CON LIGHT</h1>
