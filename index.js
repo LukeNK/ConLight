@@ -1,5 +1,10 @@
 let canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
+const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
+canvas.width = vw;
+canvas.height = vh;
+console.log(canvas.width)
 // UI stuff
 ctx.strokeStyle = "pink";
 
