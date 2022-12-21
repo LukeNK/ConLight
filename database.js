@@ -1,6 +1,13 @@
+const CUR_LV = {}; // current level
 const LEVELS = [
     {
         focus: [],
+        objs: [
+            new Graph('line', {m: 2, k : 50}),
+            new Graph('line', {m: -2, k : 0}),
+            new Graph('ellipse', {a: 100, b: 200, h: 50, k: 50}),
+            new Point(0, 0)
+        ],
         levelInit: () => {
             let l1 = new Graph('line', {m: 2, k : 50}),
                 l2 = new Graph('line', {m: -2, k : 0}),
@@ -13,7 +20,11 @@ const LEVELS = [
             new Graph('ellipse', {a: 100, b: 200, h: 0, k: 0}).draw();
         }
     },
-    {},
+    {
+        ojts: [
+            
+        ]
+    },
     {},
     {},
     {},

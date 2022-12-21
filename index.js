@@ -8,9 +8,25 @@ canvas.height = vh;
 ctx.strokeStyle = "pink";
 
 // Actual back-end stuff
-ctx.translate(canvas.width / 2, canvas.height / 2);
 // In all calculation, it pretends as if we are doing it at the origin
 // When drawing, just simply shift the graph to the correct position
+ctx.translate(canvas.width / 2, canvas.height / 2);
+
+class Point {
+    /**
+     * Create a point
+     * @param {Number} x cord
+     * @param {Number} y cord
+     */
+    constructor(x, y) {
+        // simple class just to store point to help with calculation and stuff
+        this.x = x; this.y = y;
+    }
+    draw() {
+        ctx.fill(ctx.ellipse(this.x, this.y, 10, 10, 0, 0, 2 * Math.PI));
+    }
+}
+
 class Graph {
     /**
      * Create a graph will all necessary data to draw it (if needed)
@@ -86,10 +102,11 @@ class Graph {
                 let rad = a * b * Math.sqrt(d);
                 x1 = (-a*a * m * k + rad) / e;
                 let x2 = (-a*a * m * k - rad) / e;
-                target.push(
-                    {graph: g, x: x1 + h, y: m * x1 + k + g.k},
-                    {graph: g, x: x2 + h, y: m * x2 + k + g.k},
-                )
+                // check requirement
+                if (this.minX <= x1 && x2 <= this.maxX)
+                    target.push({graph: g, x: x1 + h, y: m * x1 + k + g.k});
+                if (this.minX <= x2 && x2 <= this.maxX)
+                    target.push({graph: g, x: x2 + h, y: m * x2 + k + g.k});
             } else if (g.type == 'line') {
                 // when line intersect with a line, it only have one intersect
                 x1 = (g.k - this.k) / (this.m - g.m);
@@ -159,5 +176,21 @@ class Graph {
                 ctx.stroke();
                 break;
         }
+    }
+}
+
+class Level {
+    /**
+     * Build the level into the canvas, save and calculate necessary information
+     * @param {Graph[]} objs All of the objects in the level
+     * @param {Point[]} ojts All of the point (or their surrounding) that expected to come close
+     * @param {Number} lightX Light original X cord
+     * @param {Number} lightY Light original Y cord
+     */
+    constructor(objs, ojts, lightX, lightY) {
+        this.objs = objs;
+        for (let obj of objs) obj.draw();
+        this.ojts = ojts;
+        for (let ojt of ojts) ojt.draw();
     }
 }

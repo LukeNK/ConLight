@@ -4,13 +4,15 @@ function goIntoLevel(lv) {
         document.getElementById('menu').style.display = 'none';
         document.getElementById('level').style.display = 'block';
         document.getElementById('playUI').style.display =
-        document.getElementById('canvas').style.display = 'none';
+            document.getElementById('canvas').style.display = 'none';
 
     } else if (typeof(lv) == 'number') {
+        let cur = LEVELS[lv];
+        cur.main = new Level(cur.objs, cur.ojts); // DOING THIS
         LEVELS[lv].levelInit();
         eLevel.style.display = 'none';
         document.getElementById('playUI').style.display =
-        document.getElementById('canvas').style.display = 'block';
+            document.getElementById('canvas').style.display = 'block';
     }
     // just for sure
     window.scrollTo(0, 0); // scoll to prevent frame getting out of the screen because of 
