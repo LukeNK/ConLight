@@ -9,7 +9,6 @@ function goIntoLevel(lv) {
     } else if (typeof(lv) == 'number') {
         let cur = LEVELS[lv];
         cur.main = new Level(cur.objs, cur.ojts); // DOING THIS
-        LEVELS[lv].levelInit();
         eLevel.style.display = 'none';
         document.getElementById('playUI').style.display =
             document.getElementById('canvas').style.display = 'block';
