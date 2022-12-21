@@ -5,7 +5,8 @@ const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeig
 canvas.width = vw;
 canvas.height = vh;
 // UI stuff
-ctx.strokeStyle = "pink";
+ctx.strokeStyle = "#ffd4d4";
+ctx.fillStyle = "blue";
 
 // Actual back-end stuff
 // In all calculation, it pretends as if we are doing it at the origin
@@ -23,7 +24,9 @@ class Point {
         this.x = x; this.y = y;
     }
     draw() {
-        ctx.fill(ctx.ellipse(this.x, this.y, 10, 10, 0, 0, 2 * Math.PI));
+        let p = new Path2D();
+        p.ellipse(this.x, this.y, 10, 10, 0, 0, 2 * Math.PI);
+        ctx.fill(p);
     }
 }
 
