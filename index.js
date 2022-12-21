@@ -1,17 +1,17 @@
 let canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
-const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
-canvas.width = vw;
-canvas.height = vh;
+const VW = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+const VH = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+canvas.width = VW;
+canvas.height = VH;
+
 // UI stuff
 ctx.strokeStyle = "#ffd4d4";
 ctx.fillStyle = "blue";
 
 // Actual back-end stuff
 // In all calculation, it pretends as if we are doing it at the origin
-// When drawing, just simply shift the graph to the correct position
-ctx.translate(canvas.width / 2, canvas.height / 2);
+ctx.translate(VW / 2, VH / 2); // shifting the graph to center of canvas
 
 class Point {
     /**
@@ -88,7 +88,7 @@ class Graph {
      * This function probably only use for light
      * INCOMPLETED
      * @param {Graph[]} graphs Array of graph to consider the intersect
-     * @returns {[]} Array of graphs, inside have intersections x y
+     * @returns {[]} Array of graphs, inside have Point class
      */
     intersect(graphs) {
         // this function probably only use for the light 
@@ -107,9 +107,9 @@ class Graph {
                 let x2 = (-a*a * m * k - rad) / e;
                 // check requirement
                 if (this.minX <= x1 && x2 <= this.maxX)
-                    target.push({graph: g, x: x1 + h, y: m * x1 + k + g.k});
+                    target.push({graph: g, p: new Point(x1 + h, m * x1 + k + g.k)});
                 if (this.minX <= x2 && x2 <= this.maxX)
-                    target.push({graph: g, x: x2 + h, y: m * x2 + k + g.k});
+                    target.push({graph: g, p: new Point(x2 + h, m * x2 + k + g.k)});
             } else if (g.type == 'line') {
                 // when line intersect with a line, it only have one intersect
                 x1 = (g.k - this.k) / (this.m - g.m);
@@ -117,7 +117,7 @@ class Graph {
                     alert('Division by zero @ Graph.intersect, please try again');
                 if (this.calcFunc(x1) === false || g.calcFunc(x1) === false) continue;
                 y1 = g.m * x1 + g.k;
-                target.push({graph: g, x: x1, y: y1});
+                target.push({graph: g, p: new Point(x1, y1)});
             }
         }
         // then sort the targets, or else...
@@ -125,24 +125,25 @@ class Graph {
     }
     /**
      * Find the tangent at specific point
-     * @param {Number} x X cord
-     * @param {Number} y Y cord
+     * @param {Point} p the point that the tangent passes through
      * @returns {Graph} the graph of the tangent
      */
-    tangent(x, y) {
+    tangent(p) {
         // check to make sure only call on ellipse
         if (this.type != 'ellipse') 
             throw TypeError('Expected invoke on ellipse, got ' + this.type);
         // simplify variables
-        let {a, b} = this;
-        x = x - this.h;
-        y = y - this.k;
+        let {a, b, h, k} = this;
+        // reduce to origin
+        x = p.x - h;
+        y = p.y - k;
         // calculate the tangent slope thanks to Leo
-        let m = -b*b * x / (a*a * y); // SLOPE IS THE PROBLEM
-        x = x + this.h;
-        y = y + this.k;
-        let k = y - m*x;
-        return new Graph('line', {m: m, k: k})
+        let m = -b*b * x / (a*a * y);
+        // shift back
+        x = x + h;
+        y = y + k;
+        let k1 = y - m*x;
+        return new Graph('line', {m: m, k: k1})
     }
     /**
      * Only call on light, put tangent in case of ellipse
