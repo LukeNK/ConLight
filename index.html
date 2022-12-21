@@ -3,6 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Con Light</title>
+    <link rel="icon" type="image/x-icon" href="./icon.jpg">
     <script src="./database.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap');
@@ -19,6 +20,7 @@
             color: var(--color-theme);
             background-color: var(--color-bg);
             padding: 0;
+            margin: 0;
             overflow: hidden;
         }
 
@@ -27,9 +29,12 @@
             border-radius: 0%;
             border: 0px;
         }
+        button:hover {
+            cursor: pointer;
+        }
 
         h1, h3, h6 {
-            font-family: 'IBM Plex Sans', sans-serif;
+            font-family: 'IBM Plex Sans', Verdana, sans-serif;
         }
 
         canvas {
@@ -83,8 +88,28 @@
         }
 
         #lvList {
-            height: 50vh;
+            height: 50%;
             overflow-y: scroll;
+        }
+
+        #playUI {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+        #restartBtn {
+            top: 0;
+            left: 0;
+        }
+        #exitBtn {
+            top: 0;
+            right: 0;
+        }
+
+        #canvas {
+            top: 0;
+            left: 0;
         }
 
         /* ANIMATIONS */
@@ -96,21 +121,30 @@
             <h1>CON LIGHT</h1>
             <button onclick="goIntoLevel()">Play</button><br>
             <!-- <button>Tutorial</button><br> -->
-            <h3><b>Credit</b></h3>
-            <p>
-                <b>Leo the Eighteen Of Alexander Family Junior The greatest leader of France, Britain and Spain: </b>
-                lead his country football club to glory by winning the world cup, ensure every information you seeing on this screen is all true, 
-                and 100% of the research is done by Leo.
-            </p>
-            <p><b>Luke no life: </b></p>
+            <section style="text-align: left; padding: 0 10vw;">
+                <h3><b>Credit</b></h3>
+                <p><b>Google: </b>Leo's personal knowledge assistant, the only "person" stay with Luke when needed</p>
+                <p>
+                    <b>Leo the Eighteen Of Alexander Family Junior; the greatest leader of France, Britain and Spain (self-proclaimed): </b>
+                    led his <s>imaginary</s> country football club to glory by winning the <s>imaginary</s> world cup, 
+                    Luke's personal psychologist (without lisence), ensuring every information you seeing on this screen is all true, 
+                    and 100% of the research is done by Leo
+                </p>
+                <p><b>Luke the King of Boredom: </b>no life programmer, need an A to compensate for hours of suffering in this project</p>
+            </section>
         </div>
         <div id="level">
+            <div id="lvList"></div>
             <h1>SELECT LEVEL</h1> 
             <p>Please do not resize your screen when start playing</p>
-            <div id="lvList"></div>
+        </div>
+        <div id="playUI">
+            <!-- The main UI for the canvas -->
+            <button id="restartBtn">Restart</button>
+            <button id="exitBtn">Exit</button>
         </div>
     </nav>
-    <canvas id="canvas"  width="500" height="1000"></canvas>
+    <canvas id="canvas" width="500" height="1000"></canvas>
     <script src="index.js"></script>
     <script src="ui.js"></script>
 </body>
