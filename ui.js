@@ -1,4 +1,6 @@
 const eLevel = document.getElementById('level'); // element level
+let curLv = undefined;
+
 function goIntoLevel(lv) {
     if (lv === undefined) {
         document.getElementById('menu').style.display = 'none';
@@ -7,14 +9,18 @@ function goIntoLevel(lv) {
             document.getElementById('canvas').style.display = 'none';
 
     } else if (typeof(lv) == 'number') {
-        let cur = LEVELS[lv];
-        cur.main = new Level(cur.objs, cur.ojts);
+        curLv = LEVELS[lv];
+        curLv.main = new Level(curLv.objs, curLv.ojts);
         eLevel.style.display = 'none';
         document.getElementById('playUI').style.display =
             document.getElementById('canvas').style.display = 'block';
     }
     // just for sure
     window.scrollTo(0, 0); // scoll to prevent frame getting out of the screen because of 
+}
+
+function restartLv() {
+    curLv.main = new Level(curLv.objs, curLv.ojts);
 }
 
 (() => {

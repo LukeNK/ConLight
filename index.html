@@ -56,7 +56,9 @@
             background-color: var(--color-dark-fg);
             color: var(--color-theme-bg);
         }
-        #menu button {
+        #menu button,
+        #restartBtn,
+        #exitBtn {
             font-size: xx-large;
             width: 25vw;
             height: 2em;
@@ -139,8 +141,8 @@
         </div>
         <div id="playUI">
             <!-- The main UI for the canvas -->
-            <button id="restartBtn">Restart</button>
-            <button id="exitBtn">Exit</button>
+            <button id="restartBtn" onclick="restartLv()">Restart</button>
+            <button id="exitBtn" onclick="goIntoLevel()">Exit</button>
         </div>
     </nav>
     <canvas id="canvas" width="500" height="1000"></canvas>
