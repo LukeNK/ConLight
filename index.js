@@ -44,7 +44,7 @@ class Graph {
         if (type == 'light') {
             this.type = type = 'line';
             this.light = true;
-            this.hdg = coe.hdg; // true for up, false for down
+            this.hdg = coe.hdg; // false for left, true for right
             if (minX == undefined || maxX == undefined)
                 throw RangeError('light must have min and max');
         } else this.type = type;
@@ -147,18 +147,30 @@ class Graph {
     }
     /**
      * Only call on light, put tangent in case of ellipse
-     * @param {Graph} g The graph that being selected to reflecct ON
+     * @param {Graph} m The graph that being selected to reflecct ON
+     * @param {Point} p Point of reflection
+     * @return {Graph} The reflection of n
      */
-    reflect(g) {
-        if (!this.light) throw TypeError('Expected invoke on light, got ' + this.type);
-        if (g.type == 'ellipse') throw TypeError('Please put tangent for g');
-        let {PI, atan} = Math,
-            m1 = this.m,
-            m2 = g.m;
-            d;
-        if (this.hdg) // from bottom up
-            d = PI - (atan(m2) - atan(m1));
-        else d = PI + (atan(m2) - atan(m1));
+    reflect(m, p) {
+        // please read the paper to make sure you got the naming convention
+        let n = this;
+        if (!n.light) throw TypeError('Expected invoke on light, got ' + m.type);
+        if (m.type == 'ellipse') throw TypeError('Please put tangent of m');
+        // perpendicular with m, pass (0,0)
+        const o = new Graph('line', {m: -1/ m.m}); 
+        // random point on n that app (0,0) for hdg
+        const T = new Point((n.hdg)? -1 : 1, 0); 
+        T.y = n.calcFunc(T.x);
+        // m' passes through T and // with m
+        const mp = new Graph('line', {m: m.m, k: -T.x * m.m + T.y}); 
+        // calculate the intersect of m' and o
+        const M = new Point((o.k - mp.k) / (mp.m - o.m, 0), 0); // temp store
+        M.y = o.calcFunc(M.x);
+        // use M and T to calculate T'
+        const Tp = new Point(M.x * 2 - T.x, M.y * 2 - T.y);
+        const np = new Graph('light', {m: Tp.y / Tp.x}); // TODO: GET THE REFLECTION HDG
+        // TODO: SHIFT the graph back to its original cord
+        return np;
     }
     /**
      * Draw out the graph
