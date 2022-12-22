@@ -1,17 +1,6 @@
 let canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const VW = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-const VH = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-canvas.width = VW;
-canvas.height = VH;
-
 // UI stuff
-ctx.strokeStyle = "#ffd4d4";
-ctx.fillStyle = "blue";
-
-// Actual back-end stuff
-// In all calculation, it pretends as if we are doing it at the origin
-ctx.translate(VW / 2, VH / 2); // shifting the graph to center of canvas
 
 class Point {
     /**
@@ -209,6 +198,11 @@ class Level {
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.restore();
+        canvasSize(); // restart canvas size
+        // ui
+        ctx.strokeStyle = "#ffd4d4";
+        ctx.fillStyle = "blue";
+        // draw objects and objectives
         this.objs = objs;
         for (let obj of objs) obj.draw();
         this.ojts = ojts;

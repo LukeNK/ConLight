@@ -1,6 +1,14 @@
 const eLevel = document.getElementById('level'); // element level
 let curLv = undefined;
 
+function canvasSize() {
+    let VW = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    let VH = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    canvas.width = VW;
+    canvas.height = VH;
+    ctx.translate(VW / 2, VH / 2); // shifting the graph to center of canvas
+}
+
 function goIntoLevel(lv) {
     if (lv === undefined) {
         document.getElementById('menu').style.display = 'none';
