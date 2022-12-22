@@ -153,12 +153,12 @@ class Graph {
      */
     reflect(m, p) {
         // please read the paper to make sure you got the naming convention
-        let n = this;
+        let n = this; // minor reflection axis
         if (!n.light) throw TypeError('Expected invoke on light, got ' + m.type);
         if (m.type == 'ellipse') throw TypeError('Please put tangent of m');
         // perpendicular with m, pass (0,0)
         const o = new Graph('line', {m: -1/ m.m}); 
-        // random point on n that app (0,0) for hdg
+        // random point on n that approach (0,0) fro hdg
         const T = new Point((n.hdg)? -1 : 1, 0); 
         T.y = n.calcFunc(T.x);
         // m' passes through T and // with m
@@ -169,7 +169,7 @@ class Graph {
         // use M and T to calculate T'
         const Tp = new Point(M.x * 2 - T.x, M.y * 2 - T.y);
         const np = new Graph('light', {m: Tp.y / Tp.x}); // TODO: GET THE REFLECTION HDG
-        // TODO: SHIFT the graph back to its original cord
+        np.k = -p.x * np.m + p.y; // shift the reflection graph back to original equation
         return np;
     }
     /**
