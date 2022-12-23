@@ -18,7 +18,7 @@ function goIntoLevel(lv) {
 
     } else if (typeof(lv) == 'number') {
         curLv = LEVELS[lv];
-        curLv.main = new Level(curLv.objs, curLv.ojts);
+        curLv.main = new Level(curLv.objs, curLv.ojts, curLv.light.x, curLv.light.y);
         eLevel.style.display = 'none';
         document.getElementById('playUI').style.display =
             document.getElementById('canvas').style.display = 'block';
@@ -44,6 +44,10 @@ function restartLv() {
     }
 })();
 
-// test
+//test
 // goIntoLevel();
 // goIntoLevel(0)
+// curLv.main.launchLight(1);
+// curLv.main.light.draw();
+// curLv.main.light.intersect([curLv.main.objs[0]])[0].p.draw();
+// curLv.main.light.reflect(curLv.main.objs[0], curLv.main.light.intersect([curLv.main.objs[0]])[0].p).draw();

@@ -70,7 +70,7 @@ class Graph {
             case 'line':
             default:
                 if (!(this.minX <= x && x <= this.maxX)) return false;
-                else return [ this.m * x - this.k ];
+                else return [ this.m * x + this.k ];
         }
     }
     /**
@@ -144,24 +144,28 @@ class Graph {
     reflect(m, p) {
         // please read the paper to make sure you got the naming convention
         let n = this; // minor reflection axis
+        // strip off to make all calculation at origin, but store it temp
+        n.kt = n.k; m.kt = m.k;
+        n.k = 0; m.k = 0;
         if (!n.light) throw TypeError('Expected invoke on light, got ' + m.type);
         if (m.type == 'ellipse') throw TypeError('Please put tangent of m');
         // perpendicular with m, pass (0,0)
-        const o = new Graph('line', {m: -1/ m.m}); 
+        const o = new Graph('line', {m: -1 / m.m}); 
         // random point on n that approach (0,0) from hdg
         const T = new Point(0, 0); // placeholder
         (() => {
             // select the random point on the n
             let {PI} = Math;
-            if (PI/2 < n.hdg && n.hdg < 1.5 * PI) T.x = -1;
-            else T.x = 1
+            if (PI/2 < n.hdg && n.hdg < 1.5 * PI) T.x = 1;
+            else T.x = -1
         })();
-        T.y = n.calcFunc(T.x);
+        T.y = n.calcFunc(T.x)[0];
         // m' passes through T and // with m
         const mp = new Graph('line', {m: m.m, k: -T.x * m.m + T.y}); 
         // calculate the intersect of m' and o
-        const M = new Point((o.k - mp.k) / (mp.m - o.m, 0), 0); // temp store
-        M.y = o.calcFunc(M.x);
+        debugger
+        const M = new Point((o.k - mp.k) / (mp.m - o.m), 0); // temp store
+        M.y = o.calcFunc(M.x)[0];
         // use M and T to calculate T'
         const Tp = new Point(M.x * 2 - T.x, M.y * 2 - T.y);
         // get the reflect heading base on T'
@@ -171,8 +175,9 @@ class Graph {
             if (Tp.y > 0) npHdg = tan(Tp.y / Tp.x);
             else npHdg = tan(Tp.y / Tp.x) + PI;
         })();
-        const np = new Graph('light', {m: Tp.y / Tp.x, x: p.x, y: p.y, hdg: npHdg}); // TODO: GET THE REFLECTION HDG
-        np.k = -p.x * np.m + p.y; // shift the reflection graph back to original equation
+        const np = new Graph('light', {m: Tp.y / Tp.x, x: p.x, y: p.y, hdg: npHdg});
+        // return reference back to original value
+        n.k = n.kt; m.k = m.kt;
         return np;
     }
     /**
@@ -190,7 +195,7 @@ class Graph {
                 // calculate k after transformation for drawing
                 // then min max in the canvas instead of graph
                 ctx.beginPath();
-                ctx.moveTo(this.minX, this.m * this.minX + this.k);
+                ctx.moveTo(this.minX, this.calcFunc(this.minX)[0]);
                 ctx.lineTo(this.maxX, this.m * this.maxX + this.k);
                 ctx.stroke();
                 break;
@@ -227,8 +232,6 @@ class Level {
     }
     launchLight(hdg) {
         let {PI, tan} = Math;
-        this.light = new Graph('light', {m: hdg * PI / 180, x: this.light.x, y: this.light.y});
-        const rad = tan(hdg * PI / 180);
-        let light = new Graph('line', {m: rad});
+        this.light = new Graph('light', {m: tan(hdg), hdg: hdg, x: this.light.x, y: this.light.y});
     }
 }
