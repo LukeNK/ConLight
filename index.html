@@ -109,6 +109,12 @@
             right: 0;
             float: right;
         }
+        #playUI input {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+        }
 
         #canvas {
             top: 0;
@@ -145,6 +151,7 @@
             <!-- The main UI for the canvas -->
             <button id="restartBtn" onclick="restartLv()">Restart</button>
             <button id="exitBtn" onclick="goIntoLevel()">Exit</button>
+            <input type="range" min="0" max="360">
         </div>
     </nav>
     <canvas id="canvas" width="500" height="1000"></canvas>

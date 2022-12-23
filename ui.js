@@ -43,3 +43,7 @@ function restartLv() {
         list.appendChild(btn);
     }
 })();
+
+// test
+// goIntoLevel();
+// goIntoLevel(0)

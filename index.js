@@ -33,9 +33,10 @@ class Graph {
         if (type == 'light') {
             this.type = type = 'line';
             this.light = true;
-            this.hdg = coe.hdg; // false for left, true for right
-            if (minX == undefined || maxX == undefined)
-                throw RangeError('light must have min and max');
+            this.x = coe.x; this.y = coe.y; // light origin
+            this.hdg = coe.hdg; // heading in radian
+            if (coe.k == undefined) 
+                coe.k = - coe.x * coe.m + coe.y;
         } else this.type = type;
         switch (type) {
             case 'ellipse':
@@ -147,8 +148,14 @@ class Graph {
         if (m.type == 'ellipse') throw TypeError('Please put tangent of m');
         // perpendicular with m, pass (0,0)
         const o = new Graph('line', {m: -1/ m.m}); 
-        // random point on n that approach (0,0) fro hdg
-        const T = new Point((n.hdg)? -1 : 1, 0); 
+        // random point on n that approach (0,0) from hdg
+        const T = new Point(0, 0); // placeholder
+        (() => {
+            // select the random point on the n
+            let {PI} = Math;
+            if (PI/2 < n.hdg && n.hdg < 1.5 * PI) T.x = -1;
+            else T.x = 1
+        })();
         T.y = n.calcFunc(T.x);
         // m' passes through T and // with m
         const mp = new Graph('line', {m: m.m, k: -T.x * m.m + T.y}); 
@@ -157,7 +164,14 @@ class Graph {
         M.y = o.calcFunc(M.x);
         // use M and T to calculate T'
         const Tp = new Point(M.x * 2 - T.x, M.y * 2 - T.y);
-        const np = new Graph('light', {m: Tp.y / Tp.x}); // TODO: GET THE REFLECTION HDG
+        // get the reflect heading base on T'
+        let npHdg;
+        (() => {
+            let {tan, PI} = Math;
+            if (Tp.y > 0) npHdg = tan(Tp.y / Tp.x);
+            else npHdg = tan(Tp.y / Tp.x) + PI;
+        })();
+        const np = new Graph('light', {m: Tp.y / Tp.x, x: p.x, y: p.y, hdg: npHdg}); // TODO: GET THE REFLECTION HDG
         np.k = -p.x * np.m + p.y; // shift the reflection graph back to original equation
         return np;
     }
@@ -207,5 +221,14 @@ class Level {
         for (let obj of objs) obj.draw();
         this.ojts = ojts;
         for (let ojt of ojts) ojt.draw();
+        // light temp store for launchLight()
+        this.light = {}
+        this.light.x = lightX; this.light.y = lightY; 
+    }
+    launchLight(hdg) {
+        let {PI, tan} = Math;
+        this.light = new Graph('light', {m: hdg * PI / 180, x: this.light.x, y: this.light.y});
+        const rad = tan(hdg * PI / 180);
+        let light = new Graph('line', {m: rad});
     }
 }
