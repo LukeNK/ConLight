@@ -45,9 +45,10 @@ function restartLv() {
 })();
 
 //test
-// goIntoLevel();
-// goIntoLevel(0)
-// curLv.main.launchLight(1);
-// curLv.main.light.draw();
-// curLv.main.light.intersect([curLv.main.objs[0]])[0].p.draw();
-// curLv.main.light.reflect(curLv.main.objs[0], curLv.main.light.intersect([curLv.main.objs[0]])[0].p).draw();
+goIntoLevel();
+goIntoLevel(0)
+curLv.main.launchLight(2);
+curLv.main.light.draw();
+curLv.main.light.intersect([curLv.main.objs[0]])[0].p.draw();
+curLv.main.light.reflect(curLv.main.objs[0], curLv.main.light.intersect([curLv.main.objs[0]])[0].p).draw();
+curLv.main.light.intersect([curLv.main.objs[2]])[0].p.draw();

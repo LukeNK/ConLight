@@ -37,6 +37,7 @@ class Graph {
             this.hdg = coe.hdg; // heading in radian
             if (coe.k == undefined) 
                 coe.k = - coe.x * coe.m + coe.y;
+            if (this.lightPositive(coe.hdg)) minX = this.x; else maxX = this.x;
         } else this.type = type;
         switch (type) {
             case 'ellipse':
@@ -52,6 +53,10 @@ class Graph {
         // set min and max to out of view for ease of calculation, inclusive
         this.minX = minX || -canvas.width;
         this.maxX = maxX || canvas.width;
+    }
+    lightPositive(rad) {
+        let {PI} = Math;
+        if (PI/2 < rad && rad < 1.5 * PI) return false; else return true;
     }
     /**
      * Calculate x to get y
@@ -153,12 +158,7 @@ class Graph {
         const o = new Graph('line', {m: -1 / m.m}); 
         // random point on n that approach (0,0) from hdg
         const T = new Point(0, 0); // placeholder
-        (() => {
-            // select the random point on the n
-            let {PI} = Math;
-            if (PI/2 < n.hdg && n.hdg < 1.5 * PI) T.x = 1;
-            else T.x = -1
-        })();
+        T.x = (this.lightPositive(n.hdg))? -1 : 1;
         T.y = n.calcFunc(T.x)[0];
         // m' passes through T and // with m
         const mp = new Graph('line', {m: m.m, k: -T.x * m.m + T.y}); 
@@ -178,6 +178,7 @@ class Graph {
         const np = new Graph('light', {m: Tp.y / Tp.x, x: p.x, y: p.y, hdg: npHdg});
         // return reference back to original value
         n.k = n.kt; m.k = m.kt;
+        Tp.draw()
         return np;
     }
     /**
