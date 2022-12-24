@@ -61,12 +61,13 @@ class Graph {
     /**
      * Calculate x to get y
      * @param {Number} x Input for the function/equation 
+     * @param {true} n DON'T Check requirement
      * @returns {(Number[]|false)} In case of function return an array of result or false if out of bound
      */
-    calcFunc(x) {
+    calcFunc(x, n) {
         switch (this.type) {
             case 'ellipse':
-                if (!(this.minX <= x && x <= this.maxX)) return false;
+                if (!n && !(this.minX <= x && x <= this.maxX)) return false;
                 let {a, b, h, k} = this;
                 let frac = (a*a - (x-h)**2)/(a*a);
                 let rt = Math.sqrt(frac * b*b);
@@ -74,7 +75,7 @@ class Graph {
                 return [ y1, y2 ];
             case 'line':
             default:
-                if (!(this.minX <= x && x <= this.maxX)) return false;
+                if (!n && !(this.minX <= x && x <= this.maxX)) return false;
                 else return [ this.m * x + this.k ];
         }
     }
@@ -130,8 +131,8 @@ class Graph {
         // simplify variables
         let {a, b, h, k} = this;
         // reduce to origin
-        x = p.x - h;
-        y = p.y - k;
+        let x = p.x - h,
+            y = p.y - k;
         // calculate the tangent slope thanks to Leo
         let m = -b*b * x / (a*a * y);
         // shift back
@@ -159,26 +160,29 @@ class Graph {
         // random point on n that approach (0,0) from hdg
         const T = new Point(0, 0); // placeholder
         T.x = (this.lightPositive(n.hdg))? -1 : 1;
-        T.y = n.calcFunc(T.x)[0];
+        T.y = n.calcFunc(T.x, true)[0];
+        console.log(n);
+        console.log(T);
         // m' passes through T and // with m
         const mp = new Graph('line', {m: m.m, k: -T.x * m.m + T.y}); 
         // calculate the intersect of m' and o
-        debugger
         const M = new Point((o.k - mp.k) / (mp.m - o.m), 0); // temp store
-        M.y = o.calcFunc(M.x)[0];
+        M.y = o.calcFunc(M.x, true)[0];
         // use M and T to calculate T'
         const Tp = new Point(M.x * 2 - T.x, M.y * 2 - T.y);
         // get the reflect heading base on T'
+        debugger
         let npHdg;
         (() => {
             let {tan, PI} = Math;
-            if (Tp.y > 0) npHdg = tan(Tp.y / Tp.x);
-            else npHdg = tan(Tp.y / Tp.x) + PI;
+            if (Tp.x < 0) {
+                npHdg = tan(Tp.y / Tp.x) + PI;
+            } else npHdg = tan(Tp.y / Tp.x);
         })();
         const np = new Graph('light', {m: Tp.y / Tp.x, x: p.x, y: p.y, hdg: npHdg});
         // return reference back to original value
         n.k = n.kt; m.k = m.kt;
-        Tp.draw()
+        console.log(np)
         return np;
     }
     /**

@@ -47,8 +47,17 @@ function restartLv() {
 //test
 goIntoLevel();
 goIntoLevel(0)
-curLv.main.launchLight(2);
+curLv.main.launchLight(Math.PI*1.1); // test with Pi * 1.1
+// curLv.main.launchLight(2);
 curLv.main.light.draw();
 curLv.main.light.intersect([curLv.main.objs[0]])[0].p.draw();
-curLv.main.light.reflect(curLv.main.objs[0], curLv.main.light.intersect([curLv.main.objs[0]])[0].p).draw();
-curLv.main.light.intersect([curLv.main.objs[2]])[0].p.draw();
+console.log(curLv.main.light.calcFunc(1))
+let re = curLv.main.light.reflect(curLv.main.objs[0], curLv.main.light.intersect([curLv.main.objs[0]])[0].p);
+re.draw();
+curLv.main.light = re;
+let inter = curLv.main.light.intersect([curLv.main.objs[2]])[0].p;
+inter.draw();
+curLv.main.light.reflect(
+    curLv.main.objs[2].tangent(inter), 
+    inter
+).draw();
