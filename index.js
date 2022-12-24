@@ -102,7 +102,7 @@ class Graph {
                 x1 = (-a*a * m * k + rad) / e;
                 let x2 = (-a*a * m * k - rad) / e;
                 // check requirement
-                if (this.minX <= x1 && x2 <= this.maxX)
+                if (this.minX <= x1 && x1 <= this.maxX)
                     target.push({graph: g, p: new Point(x1 + h, m * x1 + k + g.k)});
                 if (this.minX <= x2 && x2 <= this.maxX)
                     target.push({graph: g, p: new Point(x2 + h, m * x2 + k + g.k)});
@@ -150,11 +150,14 @@ class Graph {
     reflect(m, p) {
         // please read the paper to make sure you got the naming convention
         let n = this; // minor reflection axis
+        if (!n.light) throw TypeError('Expected invoke on light, got ' + m.type);
+        if (m.type == 'ellipse') {
+            // assume p is the actual intersect
+            m = m.tangent(p);
+        }
         // strip off to make all calculation at origin, but store it temp
         n.kt = n.k; m.kt = m.k;
         n.k = 0; m.k = 0;
-        if (!n.light) throw TypeError('Expected invoke on light, got ' + m.type);
-        if (m.type == 'ellipse') throw TypeError('Please put tangent of m');
         // perpendicular with m, pass (0,0)
         const o = new Graph('line', {m: -1 / m.m}); 
         // random point on n that approach (0,0) from hdg
@@ -171,7 +174,6 @@ class Graph {
         // use M and T to calculate T'
         const Tp = new Point(M.x * 2 - T.x, M.y * 2 - T.y);
         // get the reflect heading base on T'
-        debugger
         let npHdg;
         (() => {
             let {tan, PI} = Math;
@@ -238,5 +240,26 @@ class Level {
     launchLight(hdg) {
         let {PI, tan} = Math;
         this.light = new Graph('light', {m: tan(hdg), hdg: hdg, x: this.light.x, y: this.light.y});
+    }
+    bounceLight() {
+        // find closest intersect
+        debugger
+        let intersects = this.light.intersect(this.objs);
+        let interLength = [], 
+            minL = Infinity, // min length
+            minI = undefined; // min index
+        for (let l1 in intersects) {
+            let {x, y} = intersects[l1].p;
+            let l = Math.sqrt(x**2 + y**2)
+            if (l < minL) { minL = l; minI = l1; }
+            interLength.push(l);
+        }
+        interLength[minI] = Infinity; // "remove" from the list
+        minL = Infinity, minI = undefined; // reset to select the second
+        for (let l1 in interLength) {
+            let l = interLength[l1];
+            if (l < minL) { minL = l; minI = l1; }
+        }
+        this.light = this.light.reflect(intersects[minI].graph, intersects[minI].p)
     }
 }
