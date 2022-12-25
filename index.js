@@ -53,6 +53,7 @@ class Graph {
         // set min and max to out of view for ease of calculation, inclusive
         this.minX = minX || -canvas.width;
         this.maxX = maxX || canvas.width;
+    
     }
     lightPositive(rad) {
         let {PI} = Math;
@@ -164,8 +165,6 @@ class Graph {
         const T = new Point(0, 0); // placeholder
         T.x = (this.lightPositive(n.hdg))? -1 : 1;
         T.y = n.calcFunc(T.x, true)[0];
-        console.log(n);
-        console.log(T);
         // m' passes through T and // with m
         const mp = new Graph('line', {m: m.m, k: -T.x * m.m + T.y}); 
         // calculate the intersect of m' and o
@@ -176,15 +175,20 @@ class Graph {
         // get the reflect heading base on T'
         let npHdg;
         (() => {
-            let {tan, PI} = Math;
-            if (Tp.x < 0) {
-                npHdg = tan(Tp.y / Tp.x) + PI;
-            } else npHdg = tan(Tp.y / Tp.x);
+            let {PI, atan} = Math;
+            if (Tp.x < 0 && Tp.y < 0) {
+                npHdg = atan(Tp.y / Tp.x) + PI;
+            } else if (Tp.x < 0 && Tp.y > 0){
+                npHdg = atan(Tp.y / Tp.x) + PI;
+            } else if (Tp.x > 0 && Tp.y > 0) {
+                npHdg = atan(Tp.y / Tp.x);
+            } else npHdg = atan(Tp.y / Tp.x);
         })();
         const np = new Graph('light', {m: Tp.y / Tp.x, x: p.x, y: p.y, hdg: npHdg});
         // return reference back to original value
         n.k = n.kt; m.k = m.kt;
-        console.log(np)
+        console.log('TP')
+        console.log(Tp)
         return np;
     }
     /**
@@ -241,7 +245,7 @@ class Level {
         let {PI, tan} = Math;
         this.light = new Graph('light', {m: tan(hdg), hdg: hdg, x: this.light.x, y: this.light.y});
     }
-    bounceLight() {
+    bounceLight(f) {
         // find closest intersect
         debugger
         let intersects = this.light.intersect(this.objs);
@@ -254,12 +258,17 @@ class Level {
             if (l < minL) { minL = l; minI = l1; }
             interLength.push(l);
         }
+        console.log(intersects);
+        console.log(interLength);
         interLength[minI] = Infinity; // "remove" from the list
-        minL = Infinity, minI = undefined; // reset to select the second
-        for (let l1 in interLength) {
-            let l = interLength[l1];
-            if (l < minL) { minL = l; minI = l1; }
+        if (!f) {
+            minL = Infinity, minI = undefined; // reset to select the second
+            for (let l1 in interLength) {
+                let l = interLength[l1];
+                if (l < minL) { minL = l; minI = l1; }
+            }
         }
         this.light = this.light.reflect(intersects[minI].graph, intersects[minI].p)
+        console.log(this.light)
     }
 }
