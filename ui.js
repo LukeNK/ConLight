@@ -20,9 +20,7 @@ function goIntoLevel(lv) {
         curLv = LEVELS[lv];
         curLv.main = new Level(curLv.objs, curLv.ojts, curLv.light);
         // start the level at random angle
-        let rad = Math.random() * 1000
-        preLight(rad);
-        document.getElementById('slider').value = rad;
+        preLight();
         // clearing everything for player
         eLevel.style.display = 'none';
         document.getElementById('playUI').style.display =
@@ -32,13 +30,13 @@ function goIntoLevel(lv) {
     window.scrollTo(0, 0); // scoll to prevent frame getting out of the screen because of 
 }
 
-function restartLv() {
-    curLv.main = new Level(curLv.objs, curLv.ojts);
-}
-
 function preLight(val) {
     curLv.main = new Level(curLv.objs, curLv.ojts, curLv.light);
-    curLv.main.launchLight(Math.PI * (val * 2 / 1000));
+    let rad = val || Math.random() * 1000
+    curLv.main.launchLight(
+        Math.PI * (rad * 2 / 1000)
+    );
+    document.getElementById('slider').value = rad;
     curLv.main.bounceLight(true);
 }
 

@@ -13,7 +13,7 @@ class Point {
         this.x = x; this.y = y;
     }
     draw() {
-        ctx.fillStyle = "blue";
+        ctx.fillStyle = "#F8F0FB";
         let p = new Path2D();
         p.ellipse(this.x, this.y, 10, 10, 0, 0, 2 * Math.PI);
         ctx.fill(p);
@@ -199,6 +199,25 @@ class Graph {
         return np;
     }
     /**
+     * Calculate distance of a line to a point
+     * @param {Point} p The point to check distance
+     * @returns {Number|Infinity} Return distance, or Infitity if udf
+     */
+    distanceFromPoint(p) {
+        if (this.type != 'line') 
+            throw TypeError('Only invoke distance on line')
+        let m = this;
+        // find perpendicular pass through p
+        let n = new Graph('line', {m: -1 / m.m});
+        n.k = p.y - p.x * n.m;
+        // intersect of m and n
+        console.log(n)
+        let i = m.intersect([n])[0]?.p;
+        // find the distancec between two points
+        if (i == undefined) return Infinity;
+        else return Math.sqrt((p.x - i.x)**2 + (p.y - i.y)**2);
+    }
+    /**
      * Draw out the graph
      */
     draw() {
@@ -240,17 +259,10 @@ class Level {
      * @param {Number} lightY Light original Y cord
      */
     constructor(objs, ojts, light) {
-        // clean the canvas
-        ctx.save();
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.restore();
-        canvasSize(); // restart canvas size
-        // draw objects and objectives
-        this.objs = objs;
-        for (let obj of objs) obj.draw();
-        this.ojts = ojts;
-        for (let ojt of ojts) ojt.draw();
+        // copy for objs and ojts manipulation
+        this.objs = [...objs];
+        this.ojts = [...ojts];
+        this.draw();
         // light temp store for launchLight()
         this.light = {}
         this.light.x = light.x; 
@@ -308,7 +320,24 @@ class Level {
         } else {
             this.light = 
                 this.light.reflect(intersects[minI].graph, intersects[minI].p);
+            for (let l1 in this.ojts) {
+                if (this.light.distanceFromPoint(this.ojts[l1]) < 50) {
+                    this.ojts.splice(l1, 1);
+                    this.draw();
+                }
+            }
             setTimeout(() => {this.bounceLight()}, 250)
         }
+    }
+    draw() {
+        // clean the canvas
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
+        canvasSize(); // restart canvas size
+        // draw objects and objectives
+        for (let obj of this.objs) obj.draw();
+        for (let ojt of this.ojts) ojt.draw();
     }
 }
