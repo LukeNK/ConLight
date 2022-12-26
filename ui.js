@@ -48,14 +48,20 @@ function restartLv() {
 goIntoLevel();
 goIntoLevel(0)
 //curLv.main.launchLight(Math.PI*1.6); // test with Pi * 1.1
-//curLv.main.launchLight(2);
-curLv.main.launchLight(Math.PI*1.9);
+curLv.main.launchLight(2);
+//curLv.main.launchLight(Math.PI*1.9);
 console.log(curLv.main.light)
 curLv.main.light.draw();
 curLv.main.bounceLight(1);
 curLv.main.light.draw();
 curLv.main.bounceLight();
 curLv.main.light.draw();
+curLv.main.light.draw();
+curLv.main.bounceLight();
+curLv.main.light.draw();
+curLv.main.bounceLight();
+curLv.main.light.draw();
+curLv.main.bounceLight();
 curLv.main.light.draw();
 curLv.main.bounceLight();
 curLv.main.light.draw();

@@ -103,9 +103,9 @@ class Graph {
                 x1 = (-a*a * m * k + rad) / e;
                 let x2 = (-a*a * m * k - rad) / e;
                 // check requirement
-                if (this.minX <= x1 && x1 <= this.maxX)
+                if (this.calcFunc(x1 + h).length)
                     target.push({graph: g, p: new Point(x1 + h, m * x1 + k + g.k)});
-                if (this.minX <= x2 && x2 <= this.maxX)
+                if (this.calcFunc(x2 + h).length)
                     target.push({graph: g, p: new Point(x2 + h, m * x2 + k + g.k)});
             } else if (g.type == 'line') {
                 // when line intersect with a line, it only have one intersect
@@ -254,14 +254,15 @@ class Level {
             minI = undefined; // min index
         for (let l1 in intersects) {
             let {x, y} = intersects[l1].p;
-            let l = Math.sqrt(x**2 + y**2)
+            let xo = this.light.x, yo = this.light.y;
+            let l = Math.sqrt((x - xo)**2 + (y - yo)**2)
             if (l < minL) { minL = l; minI = l1; }
             interLength.push(l);
         }
         console.log(intersects);
         console.log(interLength);
         interLength[minI] = Infinity; // "remove" from the list
-        if (!f) {
+        if (!f && interLength.length >= 2) {
             minL = Infinity, minI = undefined; // reset to select the second
             for (let l1 in interLength) {
                 let l = interLength[l1];
