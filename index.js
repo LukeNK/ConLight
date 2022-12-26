@@ -13,7 +13,7 @@ class Point {
         this.x = x; this.y = y;
     }
     draw() {
-        ctx.fillStyle = "#F8F0FB";
+        ctx.fillStyle = "#FE5F55";
         let p = new Path2D();
         p.ellipse(this.x, this.y, 10, 10, 0, 0, 2 * Math.PI);
         ctx.fill(p);
@@ -229,7 +229,7 @@ class Graph {
                 ctx.lineWidth * (this.maxBounce - this.bounce) / this.maxBounce;
         } else {
             ctx.strokeStyle = "#ffd4d4";
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 1.5;
         }
         switch (this.type) {
             case 'ellipse':
