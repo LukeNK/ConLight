@@ -19,6 +19,11 @@ function goIntoLevel(lv) {
     } else if (typeof(lv) == 'number') {
         curLv = LEVELS[lv];
         curLv.main = new Level(curLv.objs, curLv.ojts, curLv.light);
+        // start the level at random angle
+        let rad = Math.random() * 1000
+        preLight(rad);
+        document.getElementById('slider').value = rad;
+        // clearing everything for player
         eLevel.style.display = 'none';
         document.getElementById('playUI').style.display =
             document.getElementById('canvas').style.display = 'block';
@@ -49,9 +54,3 @@ function preLight(val) {
         list.appendChild(btn);
     }
 })();
-
-//test
-goIntoLevel();
-goIntoLevel(0)
-//curLv.main.launchLight(Math.PI*1.6); // test with Pi * 1.1
-//curLv.main.launchLight(2);

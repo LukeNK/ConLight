@@ -305,7 +305,10 @@ class Level {
             if (this.light.minX == intersects[minI].p.x)
                 this.light.minX = -canvas.width;
             else this.light.maxX = canvas.width;
-        } else this.light = 
-            this.light.reflect(intersects[minI].graph, intersects[minI].p);
+        } else {
+            this.light = 
+                this.light.reflect(intersects[minI].graph, intersects[minI].p);
+            setTimeout(() => {this.bounceLight()}, 250)
+        }
     }
 }

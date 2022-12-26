@@ -151,7 +151,8 @@
             <!-- The main UI for the canvas -->
             <button id="restartBtn" onclick="restartLv()">Restart</button>
             <button id="exitBtn" onclick="goIntoLevel()">Exit</button>
-            <input type="range" min="0" max="1000" oninput="preLight(this.value)">
+            <button onclick="curLv.main.bounceLight()">Bounce</button>
+            <input id="slider" type="range" min="0" max="1000" oninput="preLight(this.value)">
         </div>
     </nav>
     <canvas id="canvas" width="500" height="1000"></canvas>
