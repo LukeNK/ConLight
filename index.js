@@ -13,6 +13,7 @@ class Point {
         this.x = x; this.y = y;
     }
     draw() {
+        ctx.fillStyle = "blue";
         let p = new Path2D();
         p.ellipse(this.x, this.y, 10, 10, 0, 0, 2 * Math.PI);
         ctx.fill(p);
@@ -195,6 +196,13 @@ class Graph {
      * Draw out the graph
      */
     draw() {
+        if (this.light) { 
+            ctx.strokeStyle = "#edf67d";
+            ctx.lineWidth = 5;
+        } else {
+            ctx.strokeStyle = "#ffd4d4";
+            ctx.lineWidth = 1;
+        }
         switch (this.type) {
             case 'ellipse':
                 ctx.beginPath();
@@ -229,9 +237,6 @@ class Level {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.restore();
         canvasSize(); // restart canvas size
-        // ui
-        ctx.strokeStyle = "#ffd4d4";
-        ctx.fillStyle = "blue";
         // draw objects and objectives
         this.objs = objs;
         for (let obj of objs) obj.draw();
@@ -259,8 +264,6 @@ class Level {
             if (l < minL) { minL = l; minI = l1; }
             interLength.push(l);
         }
-        console.log(intersects);
-        console.log(interLength);
         interLength[minI] = Infinity; // "remove" from the list
         if (!f && interLength.length >= 2) {
             minL = Infinity, minI = undefined; // reset to select the second
@@ -269,7 +272,11 @@ class Level {
                 if (l < minL) { minL = l; minI = l1; }
             }
         }
-        this.light = this.light.reflect(intersects[minI].graph, intersects[minI].p)
+        if (this.light.minX == -canvas.width) {
+            this.light.minX = intersects[minI].p.x;
+        } else this.light.maxX = intersects[minI].p.x;
+        this.light.draw()
+        this.light = this.light.reflect(intersects[minI].graph, intersects[minI].p);
         console.log(this.light)
     }
 }
