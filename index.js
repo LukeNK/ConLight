@@ -268,7 +268,12 @@ class Level {
             maxBounce: this.light.b
         });
     }
-    bounceLight(f) {
+    /**
+     * Bounce light chain function
+     * @param {true} pre If true, then this is only preview
+     * @returns 
+     */
+    bounceLight(pre) {
         // find closest intersect
         if (this.light.bounce >= this.light.maxBounce) return; // no more bounce
         let intersects = this.light.intersect(this.objs);
@@ -283,22 +288,24 @@ class Level {
             if (l < minL) { minL = l; minI = l1; }
             interLength.push(l);
         }
-        if (!f) {
-            minL = Infinity, minI = undefined; // reset to select the second
-            for (let l1 in interLength) {
-                let l = interLength[l1];
-                if (l < minL) { minL = l; minI = l1; }
-            }
+        minL = Infinity, minI = undefined; // reset to select the second
+        for (let l1 in interLength) {
+            let l = interLength[l1];
+            if (l < minL) { minL = l; minI = l1; }
         }
         // assign the selected intersect
         this.lastInter = intersects[minI];
         // reduce the range to intercept for drawing
-        if (this.light.minX == -canvas.width) {
+        if (this.light.minX == -canvas.width)
             this.light.minX = intersects[minI].p.x;
-        } else this.light.maxX = intersects[minI].p.x;
-        console.log(this.light.bounce);
+        else this.light.maxX = intersects[minI].p.x;
         this.light.draw();
-        // create a bounced light
-        this.light = this.light.reflect(intersects[minI].graph, intersects[minI].p);
+        // if this is a preview, return max min to original, else assign reflect
+        if (pre) {
+            if (this.light.minX == intersects[minI].p.x)
+                this.light.minX = -canvas.width;
+            else this.light.maxX = canvas.width;
+        } else this.light = 
+            this.light.reflect(intersects[minI].graph, intersects[minI].p);
     }
 }

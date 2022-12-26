@@ -31,6 +31,12 @@ function restartLv() {
     curLv.main = new Level(curLv.objs, curLv.ojts);
 }
 
+function preLight(val) {
+    curLv.main = new Level(curLv.objs, curLv.ojts, curLv.light);
+    curLv.main.launchLight(Math.PI * (val * 2 / 1000));
+    curLv.main.bounceLight(true);
+}
+
 (() => {
     let l1 = 0, 
         list = document.getElementById('lvList');
@@ -49,17 +55,3 @@ goIntoLevel();
 goIntoLevel(0)
 //curLv.main.launchLight(Math.PI*1.6); // test with Pi * 1.1
 //curLv.main.launchLight(2);
-curLv.main.launchLight(Math.PI*1.9);
-console.log(curLv.main.light)
-curLv.main.bounceLight(1);
-curLv.main.bounceLight();
-curLv.main.bounceLight();curLv.main.bounceLight();
-curLv.main.bounceLight();curLv.main.bounceLight();
-curLv.main.bounceLight();curLv.main.bounceLight();
-curLv.main.bounceLight();curLv.main.bounceLight();
-curLv.main.bounceLight();curLv.main.bounceLight();
-curLv.main.bounceLight();curLv.main.bounceLight();
-curLv.main.bounceLight();curLv.main.bounceLight();
-curLv.main.bounceLight();curLv.main.bounceLight();
-curLv.main.bounceLight();curLv.main.bounceLight();
-curLv.main.bounceLight();
