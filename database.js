@@ -11,7 +11,7 @@ const LEVELS = [
         ojts: [
             new Point(0, 0)
         ],
-        light: {x: 50, y: 50}
+        light: {x: 50, y: 50, b: 10}
     },
     {        },
     {},

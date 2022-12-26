@@ -39,6 +39,8 @@ class Graph {
             if (coe.k == undefined) 
                 coe.k = - coe.x * coe.m + coe.y;
             if (this.lightPositive(coe.hdg)) minX = this.x; else maxX = this.x;
+            this.maxBounce = coe.maxBounce;
+            this.bounce = coe.bounce || 0; // total number of ALREADY bounced
         } else this.type = type;
         switch (type) {
             case 'ellipse':
@@ -185,11 +187,15 @@ class Graph {
                 npHdg = atan(Tp.y / Tp.x);
             } else npHdg = atan(Tp.y / Tp.x);
         })();
-        const np = new Graph('light', {m: Tp.y / Tp.x, x: p.x, y: p.y, hdg: npHdg});
+        const np = new Graph('light', {
+            m: Tp.y / Tp.x, 
+            hdg: npHdg,
+            x: p.x, y: p.y, 
+            maxBounce: this.maxBounce,
+            bounce: this.bounce + 1
+        });
         // return reference back to original value
         n.k = n.kt; m.k = m.kt;
-        console.log('TP')
-        console.log(Tp)
         return np;
     }
     /**
@@ -199,6 +205,9 @@ class Graph {
         if (this.light) { 
             ctx.strokeStyle = "#edf67d";
             ctx.lineWidth = 5;
+            // change the width
+            ctx.lineWidth = 
+                ctx.lineWidth * (this.maxBounce - this.bounce) / this.maxBounce;
         } else {
             ctx.strokeStyle = "#ffd4d4";
             ctx.lineWidth = 1;
@@ -230,7 +239,7 @@ class Level {
      * @param {Number} lightX Light original X cord
      * @param {Number} lightY Light original Y cord
      */
-    constructor(objs, ojts, lightX, lightY) {
+    constructor(objs, ojts, light) {
         // clean the canvas
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -244,15 +253,24 @@ class Level {
         for (let ojt of ojts) ojt.draw();
         // light temp store for launchLight()
         this.light = {}
-        this.light.x = lightX; this.light.y = lightY; 
+        this.light.x = light.x; 
+        this.light.y = light.y; 
+        this.light.b = light.b; // max light bounce
+        // last intercept
+        this.lastInter = undefined;
     }
     launchLight(hdg) {
         let {PI, tan} = Math;
-        this.light = new Graph('light', {m: tan(hdg), hdg: hdg, x: this.light.x, y: this.light.y});
+        this.light = new Graph('light', {
+            m: tan(hdg), 
+            hdg: hdg, 
+            x: this.light.x, y: this.light.y,
+            maxBounce: this.light.b
+        });
     }
     bounceLight(f) {
         // find closest intersect
-        debugger
+        if (this.light.bounce >= this.light.maxBounce) return; // no more bounce
         let intersects = this.light.intersect(this.objs);
         let interLength = [], 
             minL = Infinity, // min length
@@ -261,22 +279,26 @@ class Level {
             let {x, y} = intersects[l1].p;
             let xo = this.light.x, yo = this.light.y;
             let l = Math.sqrt((x - xo)**2 + (y - yo)**2)
+            if (l <= 1) l = Infinity; // weird floating point
             if (l < minL) { minL = l; minI = l1; }
             interLength.push(l);
         }
-        interLength[minI] = Infinity; // "remove" from the list
-        if (!f && interLength.length >= 2) {
+        if (!f) {
             minL = Infinity, minI = undefined; // reset to select the second
             for (let l1 in interLength) {
                 let l = interLength[l1];
                 if (l < minL) { minL = l; minI = l1; }
             }
         }
+        // assign the selected intersect
+        this.lastInter = intersects[minI];
+        // reduce the range to intercept for drawing
         if (this.light.minX == -canvas.width) {
             this.light.minX = intersects[minI].p.x;
         } else this.light.maxX = intersects[minI].p.x;
-        this.light.draw()
+        console.log(this.light.bounce);
+        this.light.draw();
+        // create a bounced light
         this.light = this.light.reflect(intersects[minI].graph, intersects[minI].p);
-        console.log(this.light)
     }
 }

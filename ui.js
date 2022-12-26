@@ -18,7 +18,7 @@ function goIntoLevel(lv) {
 
     } else if (typeof(lv) == 'number') {
         curLv = LEVELS[lv];
-        curLv.main = new Level(curLv.objs, curLv.ojts, curLv.light.x, curLv.light.y);
+        curLv.main = new Level(curLv.objs, curLv.ojts, curLv.light);
         eLevel.style.display = 'none';
         document.getElementById('playUI').style.display =
             document.getElementById('canvas').style.display = 'block';
