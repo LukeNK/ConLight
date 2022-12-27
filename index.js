@@ -1,6 +1,7 @@
 let canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-// UI stuff
+
+const HIT_TOLERANCE = 50; // basically the maximum before it out of "hit"
 
 class Point {
     /**
@@ -211,11 +212,11 @@ class Graph {
         let n = new Graph('line', {m: -1 / m.m});
         n.k = p.y - p.x * n.m;
         // intersect of m and n
-        console.log(n)
         let i = m.intersect([n])[0]?.p;
+        // if the selected point is out of range
+        if (i == undefined || m.calcFunc(i.x) == false) return Infinity;
         // find the distancec between two points
-        if (i == undefined) return Infinity;
-        else return Math.sqrt((p.x - i.x)**2 + (p.y - i.y)**2);
+        return Math.sqrt((p.x - i.x)**2 + (p.y - i.y)**2);
     }
     /**
      * Draw out the graph
@@ -286,6 +287,13 @@ class Level {
      * @returns 
      */
     bounceLight(pre) {
+        // check if the CURRENT light hit any target
+        if (!pre) for (let l1 in this.ojts) {
+            if (this.light.distanceFromPoint(this.ojts[l1]) < HIT_TOLERANCE
+            ) {
+                this.ojts.splice(l1, 1);
+                this.draw();
+            }};
         // find closest intersect
         if (this.light.bounce >= this.light.maxBounce) return; // no more bounce
         let intersects = this.light.intersect(this.objs);
@@ -320,12 +328,6 @@ class Level {
         } else {
             this.light = 
                 this.light.reflect(intersects[minI].graph, intersects[minI].p);
-            for (let l1 in this.ojts) {
-                if (this.light.distanceFromPoint(this.ojts[l1]) < 50) {
-                    this.ojts.splice(l1, 1);
-                    this.draw();
-                }
-            }
             setTimeout(() => {this.bounceLight()}, 250)
         }
     }
