@@ -1,7 +1,8 @@
 let canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-const HIT_TOLERANCE = 50; // basically the maximum before it out of "hit"
+const {PI, sqrt} = Math;
+const HIT_TOLERANCE = 15; // basically the maximum before it out of "hit"
 
 class Point {
     /**
@@ -16,7 +17,7 @@ class Point {
     draw() {
         ctx.fillStyle = "#FE5F55";
         let p = new Path2D();
-        p.ellipse(this.x, this.y, 10, 10, 0, 0, 2 * Math.PI);
+        p.ellipse(this.x, this.y, 10, 10, 0, 0, 2 * PI);
         ctx.fill(p);
     }
 }
@@ -26,10 +27,10 @@ class Graph {
      * Create a graph will all necessary data to draw it (if needed)
      * @param {String} type The type of the graph
      * @param {Object} coe Object inclide all coefficient of the graph in standard form
-     * @param {Number} minX Minimum
-     * @param {Number} maxX Maximum
+     * @param {Object} X Min and Max X
+     * @param {Object} Y Min and Max Y
      */
-    constructor(type, coe, minX, maxX) {
+    constructor(type, coe, X, Y) {
         // Depends on type of graph, choose different coefficient
         // if it is the light, still treat it as a light with origin as min max and hdg
         if (type == 'light') {
@@ -39,7 +40,10 @@ class Graph {
             this.hdg = coe.hdg; // heading in radian
             if (coe.k == undefined) 
                 coe.k = - coe.x * coe.m + coe.y;
-            if (this.lightPositive(coe.hdg)) minX = this.x; else maxX = this.x;
+            X = X || {}; // create placeholder
+            Y = Y || {};
+            if (this.lightPositiveX(coe.hdg)) X.min = this.x; else X.max = this.x;
+            if (this.lightPositiveY(coe.hdg)) Y.min = this.y; else Y.max = this.y;
             this.maxBounce = coe.maxBounce;
             this.bounce = coe.bounce || 0; // total number of ALREADY bounced
         } else this.type = type;
@@ -55,13 +59,18 @@ class Graph {
                 break;
         }
         // set min and max to out of view for ease of calculation, inclusive
-        this.minX = minX || -canvas.width;
-        this.maxX = maxX || canvas.width;
+        this.minX = X?.min || -canvas.width;
+        this.maxX = X?.max || canvas.width;
+        // consider Y AFTER X
+        this.minY = Y?.min || -canvas.height;
+        this.maxY = Y?.max || canvas.height;
     
     }
-    lightPositive(rad) {
-        let {PI} = Math;
+    lightPositiveX(rad) {
         if (PI/2 < rad && rad < 1.5 * PI) return false; else return true;
+    }
+    lightPositiveY(rad) {
+        if (0 < rad && rad < PI) return true; else return false;
     }
     /**
      * Calculate x to get y
@@ -75,7 +84,7 @@ class Graph {
                 if (!n && !(this.minX <= x && x <= this.maxX)) return false;
                 let {a, b, h, k} = this;
                 let frac = (a*a - (x-h)**2)/(a*a);
-                let rt = Math.sqrt(frac * b*b);
+                let rt = sqrt(frac * b*b);
                 let y1 = rt + k, y2 = -rt + k;
                 return [ y1, y2 ];
             case 'line':
@@ -103,7 +112,7 @@ class Graph {
                 k = m*h + k - g.k;
                 let e = a*a * m*m + b*b;
                 let d = e - k*k;
-                let rad = a * b * Math.sqrt(d);
+                let rad = a * b * sqrt(d);
                 x1 = (-a*a * m * k + rad) / e;
                 let x2 = (-a*a * m * k - rad) / e;
                 // check requirement
@@ -167,7 +176,7 @@ class Graph {
         const o = new Graph('line', {m: -1 / m.m}); 
         // random point on n that approach (0,0) from hdg
         const T = new Point(0, 0); // placeholder
-        T.x = (this.lightPositive(n.hdg))? -1 : 1;
+        T.x = (this.lightPositiveX(n.hdg))? -1 : 1;
         T.y = n.calcFunc(T.x, true)[0];
         // m' passes through T and // with m
         const mp = new Graph('line', {m: m.m, k: -T.x * m.m + T.y}); 
@@ -180,13 +189,10 @@ class Graph {
         let npHdg;
         (() => {
             let {PI, atan} = Math;
-            if (Tp.x < 0 && Tp.y < 0) {
+            if (Tp.x < 0){
                 npHdg = atan(Tp.y / Tp.x) + PI;
-            } else if (Tp.x < 0 && Tp.y > 0){
-                npHdg = atan(Tp.y / Tp.x) + PI;
-            } else if (Tp.x > 0 && Tp.y > 0) {
+            } else 
                 npHdg = atan(Tp.y / Tp.x);
-            } else npHdg = atan(Tp.y / Tp.x);
         })();
         const np = new Graph('light', {
             m: Tp.y / Tp.x, 
@@ -216,7 +222,7 @@ class Graph {
         // if the selected point is out of range
         if (i == undefined || m.calcFunc(i.x) == false) return Infinity;
         // find the distancec between two points
-        return Math.sqrt((p.x - i.x)**2 + (p.y - i.y)**2);
+        return sqrt((p.x - i.x)**2 + (p.y - i.y)**2);
     }
     /**
      * Draw out the graph
@@ -235,7 +241,7 @@ class Graph {
         switch (this.type) {
             case 'ellipse':
                 ctx.beginPath();
-                ctx.ellipse(this.h, this.k, this.a, this.b, 0, 0, Math.PI * 2);
+                ctx.ellipse(this.h, this.k, this.a, this.b, 0, 0, PI * 2);
                 ctx.stroke();
                 break;
             case 'line':
@@ -273,7 +279,7 @@ class Level {
         this.lastInter = undefined;
     }
     launchLight(hdg) {
-        let {PI, tan} = Math;
+        let {tan} = Math;
         this.light = new Graph('light', {
             m: tan(hdg), 
             hdg: hdg, 
@@ -287,13 +293,6 @@ class Level {
      * @returns 
      */
     bounceLight(pre) {
-        // check if the CURRENT light hit any target
-        if (!pre) for (let l1 in this.ojts) {
-            if (this.light.distanceFromPoint(this.ojts[l1]) < HIT_TOLERANCE
-            ) {
-                this.ojts.splice(l1, 1);
-                this.draw();
-            }};
         // find closest intersect
         if (this.light.bounce >= this.light.maxBounce) return; // no more bounce
         let intersects = this.light.intersect(this.objs);
@@ -303,7 +302,7 @@ class Level {
         for (let l1 in intersects) {
             let {x, y} = intersects[l1].p;
             let xo = this.light.x, yo = this.light.y;
-            let l = Math.sqrt((x - xo)**2 + (y - yo)**2)
+            let l = sqrt((x - xo)**2 + (y - yo)**2)
             if (l <= 1) l = Infinity; // weird floating point
             if (l < minL) { minL = l; minI = l1; }
             interLength.push(l);
@@ -315,16 +314,30 @@ class Level {
         }
         // assign the selected intersect
         this.lastInter = intersects[minI];
-        // reduce the range to intercept for drawing
+        // reduce the domain to intercept for drawing
         if (this.light.minX == -canvas.width)
             this.light.minX = intersects[minI].p.x;
         else this.light.maxX = intersects[minI].p.x;
-        this.light.draw();
+        // change y range to the intercept
+        if (this.light.minY == -canvas.height)
+            this.light.minY = intersects[minI].p.y;
+        else this.light.maxY = intersects[minI].p.y;
+        // check if the CURRENT light hit any target
+        if (!pre) for (let l1 in this.ojts) {
+            if (this.light.distanceFromPoint(this.ojts[l1]) < HIT_TOLERANCE
+            ) {
+                this.ojts.splice(l1, 1);
+                this.draw();
+            }};
+        this.light.draw(); // draw current light
         // if this is a preview, return max min to original, else assign reflect
         if (pre) {
             if (this.light.minX == intersects[minI].p.x)
                 this.light.minX = -canvas.width;
             else this.light.maxX = canvas.width;
+            if (this.light.minY == intersects[minI].p.y)
+                this.light.minY = -canvas.height;
+            else this.light.maxY = canvas.height;
         } else {
             this.light = 
                 this.light.reflect(intersects[minI].graph, intersects[minI].p);
