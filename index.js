@@ -338,10 +338,13 @@ class Level {
             if (this.light.minY == intersects[minI].p.y)
                 this.light.minY = -canvas.height;
             else this.light.maxY = canvas.height;
-        } else {
+        } else if (this.ojts.length) {
             this.light = 
                 this.light.reflect(intersects[minI].graph, intersects[minI].p);
             setTimeout(() => {this.bounceLight()}, 250)
+        } else {
+            console.log('target hit')
+            console.log(this.light.bounce + 1);
         }
     }
     draw() {

@@ -3,7 +3,7 @@ const LEVELS = [
     {
         objs: [
             new Graph('ellipse', {a: 100, b: 200}),
-            new Graph('line', {m: 1}, {min: -75, max: 100})          
+            // new Graph('line', {m: 1}, {min: -75, max: 100})          
         ],
         ojts: [
             new Point(0, 86.6)
