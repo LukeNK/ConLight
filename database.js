@@ -6,7 +6,7 @@ const LEVELS = [
             // new Graph('line', {m: 1}, {min: -75, max: 100})          
         ],
         ojts: [
-            new Point(0, 86.6)
+            new Point(0, 186.6),
         ],
         light: {x: 0.00000001, y: -86.6, b: 100}
     },

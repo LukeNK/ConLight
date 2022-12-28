@@ -153,7 +153,7 @@ class Graph {
         x = x + h;
         y = y + k;
         let k1 = y - m*x;
-        return new Graph('line', {m: m, k: k1})
+        return new Graph('line', {m: m, k: k1});
     }
     /**
      * Only call on light, put tangent in case of ellipse
@@ -226,6 +226,7 @@ class Graph {
     }
     /**
      * Draw out the graph
+     * @returns {Graph} Return for chaining
      */
     draw() {
         if (this.light) { 
@@ -254,6 +255,7 @@ class Graph {
                 ctx.stroke();
                 break;
         }
+        return this; // returnfor chaining
     }
 }
 
