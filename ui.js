@@ -44,7 +44,6 @@ function preLight(val) {
     let l1 = 0, 
         list = document.getElementById('lvList');
     for (; l1 < LEVELS.length; l1++) {
-        let lv = LEVELS[l1];
         let btn = document.createElement("button"),
             textnode = document.createTextNode(l1);
         btn.setAttribute('onclick', `goIntoLevel(${l1})`);

@@ -4,6 +4,8 @@ const ctx = canvas.getContext('2d');
 const {PI, sqrt} = Math;
 const HIT_TOLERANCE = 15; // basically the maximum before it out of "hit"
 
+let ALL_TIMEOUT = []; // all reset
+
 class Point {
     /**
      * Create a point
@@ -268,6 +270,7 @@ class Level {
      * @param {Number} lightY Light original Y cord
      */
     constructor(objs, ojts, light) {
+        this.stopLevel(); // completely stop level just in case
         // copy for objs and ojts manipulation
         this.objs = [...objs];
         this.ojts = [...ojts];
@@ -295,8 +298,10 @@ class Level {
      * @returns 
      */
     bounceLight(pre) {
+        // no more bounce
+        if (this.light.bounce >= this.light.maxBounce) 
+            return this.stopLevel();
         // find closest intersect
-        if (this.light.bounce >= this.light.maxBounce) return; // no more bounce
         let intersects = this.light.intersect(this.objs);
         let interLength = [], 
             minL = Infinity, // min length
@@ -324,13 +329,13 @@ class Level {
         if (this.light.minY == -canvas.height)
             this.light.minY = intersects[minI].p.y;
         else this.light.maxY = intersects[minI].p.y;
-        // check if the CURRENT light hit any target
-        if (!pre) for (let l1 in this.ojts) {
-            if (this.light.distanceFromPoint(this.ojts[l1]) < HIT_TOLERANCE
+        // check if the CURRENT light hit planed target
+        if (!pre)
+            if (this.light.distanceFromPoint(this.ojts[0]) < HIT_TOLERANCE
             ) {
-                this.ojts.splice(l1, 1);
+                this.ojts.splice(0, 1);
                 this.draw();
-            }};
+            };
         this.light.draw(); // draw current light
         // if this is a preview, return max min to original, else assign reflect
         if (pre) {
@@ -343,7 +348,9 @@ class Level {
         } else if (this.ojts.length) {
             this.light = 
                 this.light.reflect(intersects[minI].graph, intersects[minI].p);
-            setTimeout(() => {this.bounceLight()}, 250)
+            ALL_TIMEOUT.push(
+                setTimeout(() => {this.bounceLight()}, 250)
+            );
         } else {
             console.log('target hit')
             console.log(this.light.bounce + 1);
@@ -358,6 +365,17 @@ class Level {
         canvasSize(); // restart canvas size
         // draw objects and objectives
         for (let obj of this.objs) obj.draw();
-        for (let ojt of this.ojts) ojt.draw();
+        for (let l1 in this.ojts) {
+            let ojt = this.ojts[l1];
+            ojt.draw();
+            ctx.font = "48px verdana";
+            ctx.fillStyle = 'white';
+            ctx.fillText(parseInt(l1) + 1, ojt.x, ojt.y);
+        }
+    }
+    stopLevel() {
+        for (let timeout of ALL_TIMEOUT)
+            clearTimeout(timeout);
+        ALL_TIMEOUT = [];
     }
 }
