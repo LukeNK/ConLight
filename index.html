@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html id="html">
+<html id="html" lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
     <title>Con Light</title>
     <link rel="icon" type="image/x-icon" href="./icon.jpg">
     <style>
@@ -152,10 +153,13 @@
             <button id="restartBtn" onclick="preLight()">Restart</button>
             <button id="exitBtn" onclick="goIntoLevel()">Exit</button>
             <button onclick="curLv.main.bounceLight()">Bounce</button>
+            <p id="levelHint" style="margin: 10px;">I don't know what to do</p>
+            <!-- Bounce count -->
+            <h1 id="bCount" style="margin: 10px;"></h1> 
             <input id="slider" type="range" min="0" max="1000" oninput="preLight(this.value)">
         </div>
     </nav>
-    <canvas id="canvas" width="500" height="1000"></canvas>
+    <canvas id="canvas" width="500" height="999"></canvas>
     <script src="index.js"></script>
     <script src="./database.js"></script>
     <script src="ui.js"></script>

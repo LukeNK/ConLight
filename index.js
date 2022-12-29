@@ -299,8 +299,11 @@ class Level {
      */
     bounceLight(pre) {
         // no more bounce
-        if (this.light.bounce >= this.light.maxBounce) 
+        if (this.light.bounce > this.light.maxBounce) 
             return this.stopLevel();
+        // update bounce count UI
+        document.getElementById('bCount').innerHTML = 
+            `${this.light.bounce}/${this.light.maxBounce} bounce`;
         // find closest intersect
         let intersects = this.light.intersect(this.objs);
         let interLength = [], 
@@ -351,9 +354,6 @@ class Level {
             ALL_TIMEOUT.push(
                 setTimeout(() => {this.bounceLight()}, 250)
             );
-        } else {
-            console.log('target hit')
-            console.log(this.light.bounce + 1);
         }
     }
     draw() {
