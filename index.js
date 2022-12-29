@@ -236,9 +236,7 @@ class Graph {
             ctx.lineWidth = 5;
             // change the width
             ctx.lineWidth = 
-                ctx.lineWidth * (this.maxBounce - this.bounce + 1) / (this.maxBounce + 1);
-                console.log(ctx.lineWidth)
-            
+                ctx.lineWidth * (this.maxBounce - this.bounce + 1) / (this.maxBounce + 1);            
         } else {
             ctx.strokeStyle = "#ffd4d4";
             ctx.lineWidth = 1.5;

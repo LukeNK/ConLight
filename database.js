@@ -107,4 +107,18 @@ const LEVELS = [
         ],
         light: {x: 175, y: 175, b: 3}
     },
+    {
+        hint: `There is a gap, but can you abuse it?`,
+        objs: [
+            new Graph('ellipse', {a: 100, b: 200}),
+            new Graph('line', {m: -0.00001, k: 0}, {min: -100, max: -10}),
+            new Graph('line', {m: -0.00001, k: 0}, {min: 10, max: 100}),
+        ],
+        ojts: [
+            new Point (-95, 0),
+            new Point(0, 173.2),
+            new Point(0, -150)
+        ],
+        light: {x: 0.0000000001, y: -173.2, b: 4}
+    },
 ]

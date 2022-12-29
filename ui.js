@@ -54,5 +54,5 @@ function preLight(val) {
     }
 })();
 
-goIntoLevel();
-goIntoLevel(7);
+// goIntoLevel();
+// goIntoLevel(LEVELS.length - 1);
