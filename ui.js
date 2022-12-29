@@ -12,7 +12,7 @@ function canvasSize() {
 function goIntoLevel(lv) {
     if (lv === undefined) {
         document.getElementById('menu').style.display = 'none';
-        document.getElementById('level').style.display = 'block';
+        eLevel.style.display = 'block';
         document.getElementById('playUI').style.display =
             document.getElementById('canvas').style.display = 'none';
 

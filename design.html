@@ -42,22 +42,6 @@
         }
 
         /* UI STUFF */
-        #menu,
-        #level {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        #menu {
-            font-size: xx-large;
-            text-align: center;
-            background-color: var(--color-dark-fg);
-            color: var(--color-theme-bg);
-        }
-        #menu button,
         #playUI button {
             font-size: xx-large;
             width: 25vw;
@@ -65,33 +49,6 @@
             background-color: var(--color-theme-bg);
             color: white;
         }
-        #menu button:hover {
-            background-color: var(--color-bg);
-        }
-        #menu p {
-            font-size: large;
-        }
-
-        #level {
-            display: none;
-            font-size: xx-large;
-            background-color: var(--color-bg);
-        }
-        #level button {
-            font-size: xx-large;
-            width: 25%;
-            height: 3em;
-            background-color: var(--color-light);
-            color: var(--color-bg);
-        }
-        #level button:hover {
-            background-color: var(--color-theme-bg);
-        }
-
-        /* #lvList {
-            height: 50%;
-            overflow-y: scroll;
-        } */
 
         #playUI {
             position: absolute;
@@ -99,7 +56,6 @@
             left: 0;
             width: 100%;
             height: 0;
-            display: none;
         }
         #restartBtn {
             top: 0;
@@ -110,11 +66,17 @@
             right: 0;
             float: right;
         }
-        #playUI input {
+        #slider {
             position: fixed;
             bottom: 0;
             right: 0;
             width: 100%;
+        }
+
+        #propWin {
+            position: fixed;
+            top: 50vh;
+            left: 0;
         }
 
         #canvas {
@@ -127,41 +89,90 @@
 </head>
 <body>
     <nav>
-        <div id="menu">
-            <h1>CON LIGHT</h1>
-            <button onclick="goIntoLevel()">Play</button><br>
-            <!-- <button>Tutorial</button><br> -->
-            <section style="text-align: left; padding: 0 10vw;">
-                <h3><b>Credit</b></h3>
-                <p><b>Google: </b>Leo's personal knowledge assistant, the only "person" stay with Luke when needed</p>
-                <p>
-                    <b>Leo the Eighteen Of Alexander Family Junior; the greatest leader of France, Britain and Spain (self-proclaimed): </b>
-                    led his <s>imaginary</s> country football club to glory by winning the <s>imaginary</s> world cup, 
-                    Luke's personal psychologist (without lisence), ensuring every information you seeing on this screen is all true, 
-                    and 100% of the research is done by Leo
-                </p>
-                <p><b>Luke the King of Boredom: </b>no life programmer, need an A to compensate for hours of suffering in this project</p>
-            </section>
-        </div>
-        <div id="level">
-            <div id="lvList"></div>
-            <h1>SELECT LEVEL</h1> 
-            <p>Please do not resize your screen when start playing</p>
-        </div>
+        <!-- Just a useless place holder -->
+        <div id="level"></div> 
         <div id="playUI">
             <!-- The main UI for the canvas -->
             <button id="restartBtn" onclick="preLight()">Restart</button>
-            <button id="exitBtn" onclick="goIntoLevel()">Exit</button>
+            <button id="exitBtn" onclick="
+                LEVELS[0].main = undefined;
+                document.getElementById('levelHint').innerHTML = JSON.stringify(LEVELS[0]);
+            ">Export</button>
             <button id="bounceBtn" onclick="curLv.main.bounceLight()">Bounce</button>
             <p id="levelHint" style="margin: 10px;">I don't know what to do</p>
             <!-- Bounce count -->
             <h1 id="bCount" style="margin: 10px;"></h1> 
+
+            <label>
+                a
+                <input id="a" type="range" min="0" max="500" oninput="lvPreview('a', this.value)">
+            </label>
+            
+            <label>
+                b
+                <input id="b" type="range" min="0" max="500" oninput="lvPreview('b', this.value)">
+            </label>
+            <label>
+                m
+                <input id="m" type="range" min="0" max="10000" oninput="lvPreview('m', (this.value - 5000)/1000)">
+            </label>
+            <label>
+                h
+                <input id="h" type="range" min="0" max="1000" oninput="lvPreview('h', this.value - 500)">
+            </label>
+            
+            <label>
+                k
+                <input id="k" type="range" min="0" max="1000" oninput="lvPreview('k', this.value - 500)">
+            </label>
+
             <input id="slider" type="range" min="0" max="1000" oninput="preLight(this.value)">
+        </div>
+        <div id="propWin">
         </div>
     </nav>
     <canvas id="canvas" width="500" height="999"></canvas>
     <script src="index.js"></script>
-    <script src="./database.js"></script>
     <script src="ui.js"></script>
+    <script>
+        // special script for designer
+        let curObj;
+
+        function lvPreview(prop, val) {
+            if (!val) {
+                // if this is setting current obj
+                curObj = LEVELS[0].objs[prop];
+                return;
+            }
+            curObj[prop] = val;
+            goIntoLevel(0);
+        }
+
+        LEVELS = [{
+            hint: ``,
+            objs: [
+                new Graph('ellipse', {a: 200, b: 200}), // surrounded to out of bound
+                new Graph('line', {m: 1, k: 0})
+            ],
+            ojts: [
+                new Point(10, 10)
+            ],
+            light: {x: 50, y: 9, b: 3}
+        }];
+        goIntoLevel(0);
+
+        (() => {
+            let l1 = 0, 
+                list = document.getElementById('propWin');
+            for (l1 in curLv.objs) {
+                console.log(curLv.objs[l1])
+                let btn = document.createElement("button"),
+                    textnode = document.createTextNode(curLv.objs[l1].type);
+                btn.setAttribute('onclick', `lvPreview(${l1})`);
+                btn.appendChild(textnode);
+                list.appendChild(btn);
+            }
+        })();
+    </script>
 </body>
 <html>

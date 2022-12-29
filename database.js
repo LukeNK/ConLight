@@ -4,11 +4,9 @@ const LEVELS = [
     // {
     //     hint: ``,
     //     objs: [
-    //         
+    //         new Graph('ellipse', {a: 2000, b: 2000}), // surrounded to out of bound
     //     ],
     //     ojts: [
-    //         new Graph('ellipse', {a: 2000, b: 2000}), // surrounded to out of bound
-
     //     ],
     //     light: {x: 50, y: 0, b: 3}
     // },
