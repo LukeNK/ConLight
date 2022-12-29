@@ -236,7 +236,9 @@ class Graph {
             ctx.lineWidth = 5;
             // change the width
             ctx.lineWidth = 
-                ctx.lineWidth * (this.maxBounce - this.bounce) / this.maxBounce;
+                ctx.lineWidth * (this.maxBounce - this.bounce + 1) / (this.maxBounce + 1);
+                console.log(ctx.lineWidth)
+            
         } else {
             ctx.strokeStyle = "#ffd4d4";
             ctx.lineWidth = 1.5;
@@ -349,6 +351,7 @@ class Level {
                 this.light.minY = -canvas.height;
             else this.light.maxY = canvas.height;
         } else if (this.ojts.length) {
+            document.getElementById('bounceBtn').innerHTML = 'Skip';
             this.light = 
                 this.light.reflect(intersects[minI].graph, intersects[minI].p);
             ALL_TIMEOUT.push(
@@ -377,5 +380,6 @@ class Level {
         for (let timeout of ALL_TIMEOUT)
             clearTimeout(timeout);
         ALL_TIMEOUT = [];
+        document.getElementById('bounceBtn').innerHTML = 'Bounce';
     }
 }

@@ -55,4 +55,4 @@ function preLight(val) {
 })();
 
 goIntoLevel();
-goIntoLevel(3);
+goIntoLevel(7);

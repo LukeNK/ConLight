@@ -7,7 +7,8 @@ const LEVELS = [
     //         
     //     ],
     //     ojts: [
-    //         
+    //         new Graph('ellipse', {a: 2000, b: 2000}), // surrounded to out of bound
+
     //     ],
     //     light: {x: 50, y: 0, b: 3}
     // },
@@ -46,7 +47,7 @@ const LEVELS = [
         light: {x: 0.00000001, y: -195, b: 100},
     },
     {
-        hint: `PARABOLA! My old enemy! When the light come into the parabola directly, it will always bounce to the focus`,
+        hint: `PARABOLA! My old enemy! When the light come into the parabola directly, it will always bounce to the focus.`,
         objs: [
             new Graph('ellipse', {a: 250, b: 1000, k: 750}),
             new Graph('line', {m: -1}, {min: -250, max: 75})
@@ -90,5 +91,20 @@ const LEVELS = [
             new Point(0, 173.2)
         ],
         light: {x: 50, y: -10, b: 3}
+    },
+    {
+        hint: `The staircase of light, but very simple`,
+        objs: [
+            new Graph('ellipse', {a: 250, b: 250}),
+            new Graph('line', {m: 1, k: -100}),
+            new Graph('line', {m: 1, k: 100}),
+        ],
+        ojts: [
+            new Point (175, 75),
+            new Point (-25, 75),
+            new Point (-25, -125),
+            // new Point (-200, -120) Consider fixing light x limit first
+        ],
+        light: {x: 175, y: 175, b: 3}
     },
 ]
