@@ -167,10 +167,8 @@ class Graph {
         // please read the paper to make sure you got the naming convention
         let n = this; // minor reflection axis
         if (!n.light) throw TypeError('Expected invoke on light, got ' + m.type);
-        if (m.type == 'ellipse') {
-            // assume p is the actual intersect
-            m = m.tangent(p);
-        }
+        // assume p is the actual intersect
+        if (m.type == 'ellipse') m = m.tangent(p);
         // strip off to make all calculation at origin, but store it temp
         n.kt = n.k; m.kt = m.k;
         n.k = 0; m.k = 0;
