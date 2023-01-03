@@ -85,7 +85,7 @@ class Graph {
             case 'ellipse':
                 if (!n && !(this.minX <= x && x <= this.maxX)) return false;
                 let {a, b, h, k} = this;
-                let frac = (a*a - (x-h)**2)/(a*a);
+                let frac = (a*a - (x - h)**2)/(a*a);
                 let rt = sqrt(frac * b*b);
                 let y1 = rt + k, y2 = -rt + k;
                 return [ y1, y2 ];
@@ -111,7 +111,7 @@ class Graph {
             var x1, y1;
             if (g.type == 'ellipse') {
                 let {m, k} = this, {a, b, h} = g;
-                k = m*h + k - g.k;
+                k = m * h + k - g.k;
                 let e = a*a * m*m + b*b;
                 let d = e - k*k;
                 let rad = a * b * sqrt(d);
@@ -239,7 +239,7 @@ class Graph {
                 ctx.lineWidth * (this.maxBounce - this.bounce + 1) / (this.maxBounce + 1);            
         } else if (
             DESIGNER && 
-            curObj?.h == this?.h &&curObj?.k == this?.k &&
+            curObj?.h == this?.h && curObj?.k == this?.k &&
             curObj?.a == this?.a) {
             // if is in the designer
             ctx.strokeStyle = "#ffffff";
@@ -272,11 +272,11 @@ class Level {
     /**
      * Build the level into the canvas, save and calculate necessary information
      * @param {Graph[]} objs All of the objects in the level
-     * @param {Point[]} ojts All of the point (or their surrounding) that expected to come close
-     * @param {Number} lightX Light original X cord
-     * @param {Number} lightY Light original Y cord
+     * @param {Point[]} ojts All of the point (or their surrounding) that are objectives
+     * @param {Object} lightX Light properties
+     * @param {Function} win If win the level, invoke this
      */
-    constructor(objs, ojts, light) {
+    constructor(objs, ojts, light, win) {
         this.stopLevel(); // completely stop level just in case
         // copy for objs and ojts manipulation
         this.objs = [...objs];
@@ -289,6 +289,8 @@ class Level {
         this.light.b = light.b; // max light bounce
         // last intercept
         this.lastInter = undefined;
+        // win fuction, if exist
+        this.win = win;
     }
     launchLight(hdg) {
         let {tan} = Math;
@@ -362,7 +364,7 @@ class Level {
             ALL_TIMEOUT.push(
                 setTimeout(() => {this.bounceLight()}, 250)
             );
-        }
+        } else if (this.win) this.win();
     }
     draw() {
         // clean the canvas

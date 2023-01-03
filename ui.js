@@ -33,7 +33,7 @@ function goIntoLevel(lv) {
 }
 
 function preLight(val) {
-    curLv.main = new Level(curLv.objs, curLv.ojts, curLv.light);
+    curLv.main = new Level(curLv.objs, curLv.ojts, curLv.light, curLv?.win);
     let rad = val || Math.random() * 999
     curLv.main.launchLight(
         Math.PI * (rad * 2 / 999)

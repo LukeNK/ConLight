@@ -18,7 +18,7 @@ const LEVELS = [
         ojts: [
             new Point(0, -173.2)
         ],
-        light: {x: 0.0000000000001, y: 173.2, b: 1}
+        light: {x: 0.0000000000001, y: 173.2, b: 1},
     },
     {
         hint: 'The ellipse have one special property for light: if it light hit one foci, it will eventually bounce back and hit the other one',
@@ -53,7 +53,9 @@ const LEVELS = [
         ojts: [
             new Point(0, -218.25),
         ],
-        light: {x: 100, y: 100, b: 1}
+        light: {x: 100, y: 100, b: 1},
+        win: () => {console.log('je')}
+
     },
     {
         hint: "This level is for those who didn't listen to Ms. Liu, Mr. Liu, or read the game hint.",
