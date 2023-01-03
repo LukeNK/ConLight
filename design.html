@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>Con Light</title>
     <link rel="icon" type="image/x-icon" href="./icon.jpg">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="style.css">
     <style>
         #playUI button {
             font-size: xx-large;
@@ -26,6 +26,7 @@
             position: fixed;
             top: 50vh;
             left: 0;
+            right: 50vw;
         }
     </style>
 </head>
@@ -80,8 +81,7 @@
 
             <input id="slider" type="range" min="0" max="1000" oninput="preLight(this.value)">
         </div>
-        <div id="propWin">
-        </div>
+        <div id="propWin"></div>
     </nav>
     <canvas id="canvas" width="500" height="999"></canvas>
     <script src="index.js"></script>
@@ -89,30 +89,38 @@
     <script>
         // special script for designer
         let curObj;
+        const DESIGNER = true; // set designer flag
 
         function lvPreview(prop, val) {
-            if (val == undefined) {
-                // if this is setting current obj
+            // if this is setting current obj
+            if (val == undefined)
                 curObj = LEVELS[0].objs[prop];
-                return;
-            } else if (prop == undefined) {
+            else if (prop == undefined)
                 curObj = LEVELS[0].ojts[val];
-                return
-            }
-            curObj[prop] = val;
+            else 
+                curObj[prop] = parseInt(val);
             goIntoLevel(0);
         }
 
         LEVELS = [{
             hint: ``,
             objs: [
-                new Graph('ellipse', {a: 200, b: 200}), // surrounded to out of bound
-                new Graph('line', {m: 1, k: 0})
+                new Graph('ellipse', {a: 200, b: 200, h: -100}),
+                new Graph('ellipse', {a: 200, b: 200, h: -50}),
+                new Graph('ellipse', {a: 200, b: 200, h: 50}),
+                new Graph('ellipse', {a: 200, b: 200, h: 100}),
+                new Graph('line', {m: 1, k: -100}),
+                new Graph('line', {m: 1, k: -50}),
+                new Graph('line', {m: 1, k: 50}),
+                new Graph('line', {m: 1, k: 100})
             ],
             ojts: [
-                new Point(10, 10)
+                new Point(-50, -50),
+                new Point(0, 0),
+                new Point(50, 50),
+                new Point(100, 100),
             ],
-            light: {x: 50, y: 9, b: 3}
+            light: {x: 0.00001, y: 0.000001, b: 1000}
         }];
         goIntoLevel(0);
 

@@ -237,6 +237,13 @@ class Graph {
             // change the width
             ctx.lineWidth = 
                 ctx.lineWidth * (this.maxBounce - this.bounce + 1) / (this.maxBounce + 1);            
+        } else if (
+            DESIGNER && 
+            curObj?.h == this?.h &&curObj?.k == this?.k &&
+            curObj?.a == this?.a) {
+            // if is in the designer
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 5;
         } else {
             ctx.strokeStyle = "#ffd4d4";
             ctx.lineWidth = 1.5;
