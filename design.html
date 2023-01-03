@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <title>Con Light</title>
     <link rel="icon" type="image/x-icon" href="./icon.jpg">
+    <link rel="stylesheet" href="/styles.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap');
         :root {
@@ -66,25 +67,11 @@
             right: 0;
             float: right;
         }
-        #slider {
-            position: fixed;
-            bottom: 0;
-            right: 0;
-            width: 100%;
-        }
-
         #propWin {
             position: fixed;
             top: 50vh;
             left: 0;
         }
-
-        #canvas {
-            top: 0;
-            left: 0;
-        }
-
-        /* ANIMATIONS */
     </style>
 </head>
 <body>
@@ -126,6 +113,16 @@
                 <input id="k" type="range" min="0" max="1000" oninput="lvPreview('k', this.value - 500)">
             </label>
 
+            <label>
+                x
+                <input id="x" type="range" min="0" max="1000" oninput="lvPreview('x', this.value - 500)">
+            </label>
+            
+            <label>
+                y
+                <input id="y" type="range" min="0" max="1000" oninput="lvPreview('y', this.value - 500)">
+            </label>
+
             <input id="slider" type="range" min="0" max="1000" oninput="preLight(this.value)">
         </div>
         <div id="propWin">
@@ -139,10 +136,13 @@
         let curObj;
 
         function lvPreview(prop, val) {
-            if (!val) {
+            if (val == undefined) {
                 // if this is setting current obj
                 curObj = LEVELS[0].objs[prop];
                 return;
+            } else if (prop == undefined) {
+                curObj = LEVELS[0].ojts[val];
+                return
             }
             curObj[prop] = val;
             goIntoLevel(0);
@@ -169,6 +169,13 @@
                 let btn = document.createElement("button"),
                     textnode = document.createTextNode(curLv.objs[l1].type);
                 btn.setAttribute('onclick', `lvPreview(${l1})`);
+                btn.appendChild(textnode);
+                list.appendChild(btn);
+            }
+            for (l1 in curLv.ojts) {
+                let btn = document.createElement("button"),
+                    textnode = document.createTextNode(`point ${parseInt(l1) + 1}`);
+                btn.setAttribute('onclick', `lvPreview(undefined, ${l1})`);
                 btn.appendChild(textnode);
                 list.appendChild(btn);
             }
