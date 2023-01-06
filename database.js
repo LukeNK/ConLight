@@ -32,7 +32,7 @@ const LEVELS = [
         light: {x: 0.0000000000001, y: 173.2, b: 2}
     },
     {
-        hint: "You have to get the objectives in order. If you accidentally hit one before its turn, it won't count. You can skip bounce animation by clicking bounce button multiple times.",
+        hint: "You have to get the objectives in order. If you accidentally hit one before its turn, it won't count. You can fast-forward by clicking skip button multiple times.",
         objs: [
             new Graph('ellipse', {a: 100, b: 200}),
             new Graph('ellipse', {a: 90, b: 190}),
