@@ -124,18 +124,18 @@ const LEVELS = [
     {
         hint:"",
         objs: [
-            new Graph('ellipse', {"a":500,"b":153,"h":-1,"k":19}),
-            new Graph('ellipse', {"a":500,"b":348,"h":34,"k":500}),
-            new Graph('line', {"m":0.198,"k":-123}),
-            new Graph('line', {"m":0.021,"k":-131}),
-            new Graph('line', {"m":-1.13,"k":497}),
-            new Graph('line', {"m":0.906,"k":470})
+            new Graph('ellipse', {a: 101, b: 171, h: -1, k: 19}),
+            new Graph('ellipse', {a: 331, b: 51, h: -10, k: 500}),
+            new Graph('line', {m: 0.463, k: -78}),
+            new Graph('line', {m: -0.068, k: 470}),
+            new Graph('line', {m: -0.156, k: 500}),
+            new Graph('line', {m: 0.021, k: -500})
         ],
         ojts: [
-            new Point(-182, -65),
-            new Point(-403, 59),
-            new Point(313, 130),
-            new Point(198, 210)
+            new Point(66, -73),
+            new Point(-41, 59),
+            new Point(-41,130),
+            new Point(48,  15)
         ],
         light: {x: 0.00001, y: 0.000001, b: 1000}
     }
