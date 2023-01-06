@@ -18,8 +18,10 @@ function goIntoLevel(lv) {
             document.getElementById('canvas').style.display = 'none';
     } else if (lv == 11) {
         audio.play();
+        audio.style.display = 'block';
+        audio.width = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        audio.height = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
         eLevel.style.display = 'none';
-        document.getElementById('roll').style.display = 'block';
     }
     else if (typeof(lv) == 'number') {
         curLv = LEVELS[lv];

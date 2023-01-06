@@ -61,11 +61,13 @@ class Graph {
                 break;
         }
         // set min and max to out of view for ease of calculation, inclusive
-        this.minX = X?.min || -canvas.width;
-        this.maxX = X?.max || canvas.width;
+        let VW = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        let VH = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+        this.minX = X?.min || -VW;
+        this.maxX = X?.max || VW;
         // consider Y AFTER X
-        this.minY = Y?.min || -canvas.height;
-        this.maxY = Y?.max || canvas.height;
+        this.minY = Y?.min || -VH;
+        this.maxY = Y?.max || VH;
     
     }
     lightPositiveX(rad) {
