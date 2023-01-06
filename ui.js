@@ -17,7 +17,9 @@ function goIntoLevel(lv) {
         document.getElementById('playUI').style.display =
             document.getElementById('canvas').style.display = 'none';
     } else if (lv == 11) {
-        audio.play()
+        audio.play();
+        eLevel.style.display = 'none';
+        document.getElementById('rick').style.display = 'block';
     }
     else if (typeof(lv) == 'number') {
         curLv = LEVELS[lv];

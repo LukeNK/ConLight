@@ -116,4 +116,10 @@ canvas {
     left: 0;
 }
 
+#rick {
+    display: none;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
 /* ANIMATIONS */
