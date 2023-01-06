@@ -11,7 +11,7 @@ const LEVELS = [
     //     light: {x: 50, y: 0, b: 3}
     // },
     {
-        hint: 'The objective of this game is to get the light beam through all of the target. Move the slider at the bottom of the screen to change the launch direction of the light.',
+        hint: 'The objective of this game is to get the light beam through all of the target. Swipe left or right to change the launch direction of the light.',
         objs: [
             new Graph('ellipse', {a: 100, b: 200}),
         ],
