@@ -19,7 +19,7 @@ function goIntoLevel(lv) {
     } else if (lv == 11) {
         audio.play();
         eLevel.style.display = 'none';
-        document.getElementById('rick').style.display = 'block';
+        document.getElementById('roll').style.display = 'block';
     }
     else if (typeof(lv) == 'number') {
         curLv = LEVELS[lv];
