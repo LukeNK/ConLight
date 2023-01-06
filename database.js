@@ -93,21 +93,6 @@ const LEVELS = [
         light: {x: 50, y: -10, b: 3}
     },
     {
-        hint: `The staircase of light, but very simple`,
-        objs: [
-            new Graph('ellipse', {a: 250, b: 250}),
-            new Graph('line', {m: 1, k: -100}),
-            new Graph('line', {m: 1, k: 100}),
-        ],
-        ojts: [
-            new Point (175, 75),
-            new Point (-25, 75),
-            new Point (-25, -125),
-            // new Point (-200, -120) Consider fixing light x limit first
-        ],
-        light: {x: 175, y: 175, b: 3}
-    },
-    {
         hint: `There is a gap, but can you abuse it?`,
         objs: [
             new Graph('ellipse', {a: 100, b: 200}),
@@ -138,16 +123,13 @@ const LEVELS = [
     {
         hint: "Have fun and prepare for the final level!",
         objs: [
-            new Graph('ellipse', {a: 200, b: 200, h: -500, k: -500}),
-            new Graph('ellipse', {a: 200, b: 200, h: -500, k: -500}),
-            new Graph('ellipse', {a: 200, b: 200, h: -500, k: -500}),
-            new Graph('ellipse', {a: 123, b: 317, h: -107, k: 19}),
+            new Graph('ellipse', {a: 123, b: 317, h: 0, k: 19}),
         ],
         ojts: [
-            new Point(-102, -188),
-            new Point(-14, 201),
-            new Point(-209, -135),
-            new Point(-102, 325),
+            new Point(-102 + 107, -188),
+            new Point(-14 + 107, 201),
+            new Point(-209 + 107, -135),
+            new Point(-102 + 107, 325),
         ],
         light: {x: 0.0000000001, y: 0.0000001, b: 1000}
     },
@@ -168,5 +150,7 @@ const LEVELS = [
             new Point(48,  15)
         ],
         light: {x: 0.00001, y: 0.000001, b: 1000}
+    }, {
+        // empty level for something *special*
     }
 ]

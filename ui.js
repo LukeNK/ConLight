@@ -1,4 +1,5 @@
 const eLevel = document.getElementById('level'); // element level
+const audio = document.getElementById('roll');
 let curLv = undefined;
 
 function canvasSize() {
@@ -15,8 +16,10 @@ function goIntoLevel(lv) {
         eLevel.style.display = 'block';
         document.getElementById('playUI').style.display =
             document.getElementById('canvas').style.display = 'none';
-
-    } else if (typeof(lv) == 'number') {
+    } else if (lv == 11) {
+        audio.play()
+    }
+    else if (typeof(lv) == 'number') {
         curLv = LEVELS[lv];
         curLv.main = new Level(curLv.objs, curLv.ojts, curLv.light);
         // start the level at random angle
