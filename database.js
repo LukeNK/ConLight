@@ -134,7 +134,7 @@ const LEVELS = [
         light: {x: 0.0000000001, y: 0.0000001, b: 1000}
     },
     {
-        hint: "BOSS LEVEL <br> Luke made some mistake when programming, so can you exploit it?",
+        hint: "BOSS LEVEL <br> Luke made some mistakes when programming, so can you exploit it?",
         objs: [
             new Graph('ellipse', {a: 101, b: 171, h: -1, k: 19}),
             new Graph('ellipse', {a: 331, b: 51, h: -10, k: 500}),
