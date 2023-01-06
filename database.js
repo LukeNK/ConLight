@@ -122,7 +122,37 @@ const LEVELS = [
         light: {x: 0.0000000001, y: -173.2, b: 4}
     },
     {
-        hint:"",
+        hint: "NUMBER FOUR!",
+        objs: [
+            new Graph('ellipse', {a: 149, b: 303, h: -1, k: 28}),
+            new Graph('ellipse', {a: 34, b: 200, h: -45, k: 90})
+        ],
+        ojts: [
+            new Point(66, -171),
+            new Point(-129, -38),
+            new Point(-111, 174),
+            new Point(92, 166),
+        ],
+        light: {x: 0.0000000001, y: 0.0000001, b: 40}
+    },
+    {
+        hint: "Have fun and prepare for the final level!",
+        objs: [
+            new Graph('ellipse', {a: 200, b: 200, h: -500, k: -500}),
+            new Graph('ellipse', {a: 200, b: 200, h: -500, k: -500}),
+            new Graph('ellipse', {a: 200, b: 200, h: -500, k: -500}),
+            new Graph('ellipse', {a: 123, b: 317, h: -107, k: 19}),
+        ],
+        ojts: [
+            new Point(-102, -188),
+            new Point(-14, 201),
+            new Point(-209, -135),
+            new Point(-102, 325),
+        ],
+        light: {x: 0.0000000001, y: 0.0000001, b: 1000}
+    },
+    {
+        hint: "BOSS LEVEL <br> However, Luke does make some mistake when programming, so can you exploit it?",
         objs: [
             new Graph('ellipse', {a: 101, b: 171, h: -1, k: 19}),
             new Graph('ellipse', {a: 331, b: 51, h: -10, k: 500}),
